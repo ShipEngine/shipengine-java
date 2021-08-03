@@ -1,0 +1,43 @@
+# Git ignore
+# https://git-scm.com/docs/gitignore
+
+# Private files
+.env
+.envrc
+
+# Miscellaneous
+*~
+*#
+.DS_STORE
+Thumbs.db
+.netbeans
+nbproject
+
+# IDEs & Text Editors
+.idea
+.sublime-*
+.netbeans
+nbproject
+
+# Temporary files
+.tmp
+.temp
+.grunt
+.lock-wscript
+
+# Logs
+/logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Dependencies
+
+# Build output
+
+# Test output
+/.nyc_output
+/coverage
