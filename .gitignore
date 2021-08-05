@@ -37,6 +37,8 @@ pids
 # Dependencies
 
 # Build output
+out/
+target/
 
 # Test output
 /.nyc_output
