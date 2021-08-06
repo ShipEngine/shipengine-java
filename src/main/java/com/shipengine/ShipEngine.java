@@ -12,34 +12,34 @@ public class ShipEngine
     }
 
     public String validateAddresses() {
-      return config.sayHi();
+      return config.baseURL();
     }
 
     public String listCarriers() {
-      return config.sayHi();
+      return config.baseURL();
     }
 
     public String trackUsingCarrierCodeAndTrackingNumber() {
-      return config.sayHi();
+      return config.baseURL();
     }
 
     public String trackUsingLabelId() {
-      return config.sayHi();
+      return config.baseURL();
     }
 
     public String createLabelFromShipmentDetails() {
-      return config.sayHi();
+      return config.baseURL();
     }
 
     public String createLabelFromRate() {
-      return config.sayHi();
+      return config.baseURL();
     }
 
     public String voidLabelWithLabelId() {
-      return config.sayHi();
+      return config.baseURL();
     }
 
     public String getRatesWithShipmentDetails() {
-      return config.sayHi();
+      return config.baseURL();
     }
 }

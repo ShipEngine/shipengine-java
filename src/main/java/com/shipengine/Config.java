@@ -12,7 +12,7 @@ public class Config
       The URL of the ShipEngine API. You can usually leave this unset and it will
       default to our public API.
     * */
-    String baseURL;
+    String baseURL = "https://api.shipengine.com/";
 
     /*
       Some ShipEngine API endpoints return paged data. This lets you control the
@@ -49,7 +49,23 @@ public class Config
       pageSize = 50;
     }
 
-    public String sayHi() {
-      return "Hello World from CONFIG!";
+    public String baseURL() {
+      return baseURL;
+    }
+
+    public String apiKey() {
+      return apiKey;
+    }
+
+    public int timeout() {
+      return timeout;
+    }
+
+    public int retries() {
+      return retries;
+    }
+
+    public int pageSize() {
+      return pageSize;
     }
 }
