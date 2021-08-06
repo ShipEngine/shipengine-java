@@ -41,8 +41,9 @@ public class Config
     * */
     int timeout;
 
-    public Config()
+    public Config(String apiKey)
     {
+      apiKey = apiKey;
       timeout = 5000;
       retries = 1;
       pageSize = 50;

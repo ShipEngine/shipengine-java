@@ -6,9 +6,9 @@ public class ShipEngine
 {
     Config config;
 
-    public ShipEngine()
+    public ShipEngine(String apiKey)
     {
-        config = new Config();
+        config = new Config(apiKey);
     }
 
     public String validateAddresses() {
