@@ -8,14 +8,12 @@ import com.shipengine.ShipEngine;
 /**
  * Unit test for simple App.
  */
-public class ShipEngineTest
-{
+public class ShipEngineTest {
     /**
      * Rigorous Test :-)
      */
     @Test
-    public void shouldAnswerWithTrue()
-    {
-        assertEquals( new ShipEngine("test").validateAddresses(), "https://api.shipengine.com/" );
+    public void shouldAnswerWithTrue() {
+        assertEquals(new ShipEngine("test").validateAddresses(), "https://api.shipengine.com/");
     }
 }

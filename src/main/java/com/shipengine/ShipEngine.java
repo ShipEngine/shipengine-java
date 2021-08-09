@@ -3,41 +3,41 @@ package com.shipengine;
 import com.shipengine.Config;
 
 public class ShipEngine {
-  Config config;
+    Config config;
 
-  public ShipEngine(String apiKey) {
-    config = new Config(apiKey);
-  }
+    public ShipEngine(String apiKey) {
+        config = new Config(apiKey);
+    }
 
-  public String validateAddresses() {
-    return config.baseURL();
-  }
+    public String validateAddresses() {
+        return config.baseUrl();
+    }
 
-  public String listCarriers() {
-    return config.baseURL();
-  }
+    public String listCarriers() {
+        return config.baseUrl();
+    }
 
-  public String trackUsingCarrierCodeAndTrackingNumber() {
-    return config.baseURL();
-  }
+    public String trackUsingCarrierCodeAndTrackingNumber() {
+        return config.baseUrl();
+    }
 
-  public String trackUsingLabelId() {
-    return config.baseURL();
-  }
+    public String trackUsingLabelId() {
+        return config.baseUrl();
+    }
 
-  public String createLabelFromShipmentDetails() {
-    return config.baseURL();
-  }
+    public String createLabelFromShipmentDetails() {
+        return config.baseUrl();
+    }
 
-  public String createLabelFromRate() {
-    return config.baseURL();
-  }
+    public String createLabelFromRate() {
+        return config.baseUrl();
+    }
 
-  public String voidLabelWithLabelId() {
-    return config.baseURL();
-  }
+    public String voidLabelWithLabelId() {
+        return config.baseUrl();
+    }
 
-  public String getRatesWithShipmentDetails() {
-    return config.baseURL();
-  }
+    public String getRatesWithShipmentDetails() {
+        return config.baseUrl();
+    }
 }
