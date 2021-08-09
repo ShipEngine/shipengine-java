@@ -4,6 +4,8 @@ ShipEngine Java SDK
 =====================================================
 ### The official ShipEngine Java SDK
 
+[![shipengine-java CI](https://github.com/ShipEngine/shipengine-java/actions/workflows/CI.yml/badge.svg)](https://github.com/ShipEngine/shipengine-java/actions/workflows/CI.yml)
+
 Quick Start
 --------------------------
 TODO
