@@ -43,3 +43,7 @@ target/
 # Test output
 /.nyc_output
 /coverage
+
+.settings
+.project
+.classpath
