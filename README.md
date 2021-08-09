@@ -31,12 +31,20 @@ To build the project locally on your computer:
 `git clone https://github.com/ShipEngine/shipengine-java.git`
 
 2. __Install dependencies__<br>
+`mvn install`
 
 3. __Build the code__<br>
+`mvn package`
 
 4. __Lint the code__<br>
+`mvn checkstyle:checkstyle`
 
 5. __Run the tests__<br>
+`mvn test`
+
+VS Code Setup
+-------------------------
+Install the [Java Extension Pack](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) to help write, test and debug the application, and install [Checkstyle for Java](https://marketplace.visualstudio.com/items?itemName=shengchen.vscode-checkstyle) to enable code formatting.
 
 Committing
 -------------------------
