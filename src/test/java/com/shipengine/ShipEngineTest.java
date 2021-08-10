@@ -3,7 +3,6 @@ package com.shipengine;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import com.shipengine.ShipEngine;
 
 /**
  * Unit test for simple App.
