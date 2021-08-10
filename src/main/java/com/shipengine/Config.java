@@ -3,15 +3,13 @@ package com.shipengine;
 public class Config {
     private String apiKey;
     private String baseUrl = "https://api.shipengine.com/";
-    private int pageSize;
-    private int retries;
-    private int timeout;
+    private int pageSize = 5000;
+    private int retries = 1;
+    private int timeout = 50;
 
     public Config(String apiKey) {
         this.setApiKey(apiKey);
-        this.setTimeout(5000);
-        this.setRetries(1);
-        this.setPageSize(50);
+        ;
     }
 
     public Config(String apiKey, int timeout, int retries, int pageSize) {
