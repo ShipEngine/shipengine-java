@@ -41,29 +41,29 @@ public class Config {
     int timeout;
 
     public Config(String apiKey) {
-        apiKey = apiKey;
-        timeout = 5000;
-        retries = 1;
-        pageSize = 50;
+        this.apiKey = apiKey;
+        this.timeout = 5000;
+        this.retries = 1;
+        this.pageSize = 50;
     }
 
-    public String baseUrl() {
+    public String getBaseUrl() {
         return baseUrl;
     }
 
-    public String apiKey() {
+    public String getApiKey() {
         return apiKey;
     }
 
-    public int timeout() {
+    public int getTimeout() {
         return timeout;
     }
 
-    public int retries() {
+    public int getRetries() {
         return retries;
     }
 
-    public int pageSize() {
+    public int getPageSize() {
         return pageSize;
     }
 }

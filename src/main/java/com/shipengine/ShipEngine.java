@@ -1,43 +1,45 @@
 package com.shipengine;
 
-import com.shipengine.Config;
-
 public class ShipEngine {
     Config config;
 
     public ShipEngine(String apiKey) {
-        config = new Config(apiKey);
+        this.config = new Config(apiKey);
+    }
+
+    public Config getConfig() {
+        return config;
     }
 
     public String validateAddresses() {
-        return config.baseUrl();
+        return config.getBaseUrl();
     }
 
     public String listCarriers() {
-        return config.baseUrl();
+        return config.getBaseUrl();
     }
 
     public String trackUsingCarrierCodeAndTrackingNumber() {
-        return config.baseUrl();
+        return config.getBaseUrl();
     }
 
     public String trackUsingLabelId() {
-        return config.baseUrl();
+        return config.getBaseUrl();
     }
 
     public String createLabelFromShipmentDetails() {
-        return config.baseUrl();
+        return config.getBaseUrl();
     }
 
     public String createLabelFromRate() {
-        return config.baseUrl();
+        return config.getBaseUrl();
     }
 
     public String voidLabelWithLabelId() {
-        return config.baseUrl();
+        return config.getBaseUrl();
     }
 
     public String getRatesWithShipmentDetails() {
-        return config.baseUrl();
+        return config.getBaseUrl();
     }
 }
