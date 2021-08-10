@@ -5,13 +5,13 @@ package com.shipengine.exception;
  * that are conditionally required.
  */
 public class FieldValueRequiredException extends RuntimeException {
-  /**
-   * The name of the invalid field.
-   */
-  String fieldName;
+    /**
+     * The name of the invalid field.
+     */
+    String fieldName;
 
-  /**
-   * The value of the invalid field.
-   */
-  String fieldValue;
+    /**
+     * The value of the invalid field.
+     */
+    String fieldValue;
 }
