@@ -1,10 +1,14 @@
 package com.shipengine;
 
 public class ShipEngine {
-    Config config;
+    private Config config;
 
     public ShipEngine(String apiKey) {
         this.config = new Config(apiKey);
+    }
+
+    public ShipEngine(String apiKey, int timeout, int retries, int pageSize) {
+        this.config = new Config(apiKey, timeout, retries, pageSize);
     }
 
     public Config getConfig() {

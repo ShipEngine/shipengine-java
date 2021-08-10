@@ -12,9 +12,17 @@ public class ConfigTest {
    * Should allow the config to just be the API key
    */
   @Test
-  public void shouldAllowApiKeyOnly() {
+  public void shouldAllowApiKeyOnlyConstructor() {
     ShipEngine client = new ShipEngine("test");
 
     assertEquals(client.getConfig().getApiKey(), "test");
+  }
+
+  /**
+   * Does not allow an empty string
+   */
+  @Test
+  public void shouldNotAllowAnEmptyApiKeyString() {
+    new ShipEngine("");
   }
 }
