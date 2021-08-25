@@ -76,7 +76,7 @@ public class ShipEngineException extends RuntimeException {
      * contact ShipEngine for support or if you should contact the carrier or
      * marketplace instead.
      *
-     * @see https://www.shipengine.com/docs/errors/codes/#error-source
+     * @see <a href="https://www.shipengine.com/docs/errors/codes/#error-source">...</a>
      */
     ErrorSource source;
 
@@ -84,7 +84,7 @@ public class ShipEngineException extends RuntimeException {
      * Indicates the type of error that occurred, such as a validation error, a
      * security error, etc.
      *
-     * @see https://www.shipengine.com/docs/errors/codes/#error-type
+     * @see <a href="https://www.shipengine.com/docs/errors/codes/#error-type">...</a>
      */
     ErrorType type;
 
@@ -92,7 +92,7 @@ public class ShipEngineException extends RuntimeException {
      * A code that indicates the specific error that occurred, such as missing a
      * required field, an invalid address, a timeout, etc.
      *
-     * @see https://www.shipengine.com/docs/errors/codes/#error-code
+     * @see <a href="https://www.shipengine.com/docs/errors/codes/#error-code">...</a>
      */
     ErrorCode code;
 
