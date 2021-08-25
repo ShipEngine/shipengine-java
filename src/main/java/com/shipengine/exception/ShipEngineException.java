@@ -8,15 +8,60 @@ import java.net.URL;
  */
 public class ShipEngineException extends RuntimeException {
     enum ErrorSource {
-        LOW, MEDIUM, HIGH
+        CARRIER,
+        ORDER_SOURCE,
+        SHIPENGINE
     }
 
     enum ErrorType {
-        LOW, MEDIUM, HIGH
+        ACCOUNT_STATUS,
+        AUTHORIZATION,
+        BUSINESS_RULES,
+        ERROR,
+        SECURITY,
+        SYSTEM,
+        VALIDATION
     }
 
     enum ErrorCode {
-        LOW, MEDIUM, HIGH
+        ADDRESS_NOT_FOUND,
+        AUTO_FUND_NOT_SUPPORTED,
+        BATCH_CANNOT_BE_MODIFIED,
+        CARRIER_CONFLICT,
+        CARRIER_NOT_CONNECTED,
+        CARRIER_NOT_SUPPORTED,
+        CONFIRMATION_NOT_SUPPORTED,
+        FIELD_CONFLICT,
+        FIELD_VALUE_REQUIRED,
+        FORBIDDEN,
+        IDENTIFIER_CONFLICT,
+        IDENTIFIER_MUST_MATCH,
+        INCOMPATIBLE_PAIRED_LABELS,
+        INVALID_ADDRESS,
+        INVALID_BILLING_PLAN,
+        INVALID_CHARGE_EVENT,
+        INVALID_FIELD_VALUE,
+        INVALID_IDENTIFIER,
+        INVALID_STATUS,
+        INVALID_STRING_LENGTH,
+        LABEL_IMAGES_NOT_SUPPORTED,
+        METER_FAILURE,
+        MINIMUM_POSTAL_CODE_VERIFICATION_FAILED,
+        NOT_FOUND,
+        PARTIALLY_VERIFIED_TO_PREMISE_LEVEL,
+        RATE_LIMIT_EXCEEDED,
+        REQUEST_BODY_REQUIRED,
+        RETURN_LABEL_NOT_SUPPORTED,
+        SUBSCRIPTION_INACTIVE,
+        TERMS_NOT_ACCEPTED,
+        TIMEOUT,
+        TRACKING_NOT_SUPPORTED,
+        TRIAL_EXPIRED,
+        UNAUTHORIZED,
+        UNSPECIFIED,
+        VERIFICATION_CONFLICT,
+        WAREHOUSE_CONFLICT,
+        WEBHOOK_EVENT_TYPE_CONFLICT
     }
 
     /**
@@ -51,13 +96,65 @@ public class ShipEngineException extends RuntimeException {
      */
     ErrorCode code;
 
+    public String getRequestID() {
+        return requestID;
+    }
+
+    public ErrorSource getSource() {
+        return source;
+    }
+
+    public ErrorType getType() {
+        return type;
+    }
+
+    public ErrorCode getCode() {
+        return code;
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public void setRequestID(String requestID) {
+        this.requestID = requestID;
+    }
+
+    public void setSource(ErrorSource source) {
+        this.source = source;
+    }
+
+    public void setType(ErrorType type) {
+        this.type = type;
+    }
+
+    public void setCode(ErrorCode code) {
+        this.code = code;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
+    }
+
     /**
      * Some errors include a URL that you can visit to learn more about the error,
      * find out how to resolve it, or get support.
      */
     URL url;
 
-    public ShipEngineException() {
-
+    public ShipEngineException(
+            String message,
+            String requestID,
+            ErrorSource source,
+            ErrorType type,
+            ErrorCode code,
+            URL url
+    ) {
+        super(message);
+        this.setRequestID(requestID);
+        this.setSource(source);
+        this.setType(type);
+        this.setCode(code);
+        this.setUrl(url);
     }
 }

@@ -1,7 +1,7 @@
 package com.shipengine.exception;
 
 /**
- * This error occurs when a rquired field has not been set. This includes fields
+ * This error occurs when a required field has not been set. This includes fields
  * that are conditionally required.
  */
 public class FieldValueRequiredException extends RuntimeException {
@@ -10,8 +10,9 @@ public class FieldValueRequiredException extends RuntimeException {
      */
     String fieldName;
 
-    /**
-     * The value of the invalid field.
-     */
-    String fieldValue;
+    public FieldValueRequiredException(
+            String fieldName
+    ) {
+        super(String.format("%s is a required field.", fieldName));
+    }
 }

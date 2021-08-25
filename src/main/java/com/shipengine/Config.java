@@ -9,7 +9,6 @@ public class Config {
 
     public Config(String apiKey) {
         this.setApiKey(apiKey);
-        ;
     }
 
     public Config(String apiKey, int timeout, int retries, int pageSize) {
