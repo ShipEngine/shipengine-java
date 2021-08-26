@@ -1,5 +1,7 @@
 package com.shipengine;
 
+import java.util.HashMap;
+
 public class Config {
     private String apiKey;
     private String baseUrl = "https://api.shipengine.com/";
@@ -8,14 +10,14 @@ public class Config {
     private int timeout = 50;
 
     public Config(String apiKey) {
-        this.setApiKey(apiKey);
+        setApiKey(apiKey);
     }
 
     public Config(String apiKey, int timeout, int retries, int pageSize) {
-        this.setApiKey(apiKey);
-        this.setTimeout(timeout);
-        this.setRetries(retries);
-        this.setPageSize(pageSize);
+        setApiKey(apiKey);
+        setTimeout(timeout);
+        setRetries(retries);
+        setPageSize(pageSize);
     }
 
     /*
@@ -93,5 +95,22 @@ public class Config {
      */
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public Config merge() {
+        return this;
+    }
+
+    public Config merge(String apiKey) {
+        return new Config(apiKey);
+    }
+
+    public Config merge(String apiKey, int timeout, int retries, int pageSize) {
+        return new Config(
+                apiKey,
+                timeout,
+                retries,
+                pageSize
+        );
     }
 }
