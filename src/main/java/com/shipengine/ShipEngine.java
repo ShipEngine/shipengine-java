@@ -1,5 +1,7 @@
 package com.shipengine;
 
+import java.util.List;
+
 public class ShipEngine {
     private Config config;
 
@@ -15,7 +17,13 @@ public class ShipEngine {
         return config;
     }
 
-    public String validateAddresses() {
+    public String validateAddresses(List address, Config config) {
+        InternalClient client = new InternalClient();
+        client.post(
+                "/v1/addresses/validate",
+                "",
+                config
+        );
         return config.getBaseUrl();
     }
 

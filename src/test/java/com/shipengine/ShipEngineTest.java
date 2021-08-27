@@ -13,6 +13,6 @@ public class ShipEngineTest {
      */
     @Test
     public void shouldAnswerWithTrue() {
-        assertEquals(new ShipEngine("test").validateAddresses(), "https://api.shipengine.com/");
+        assertEquals(new ShipEngine("test").listCarriers(), "https://api.shipengine.com/");
     }
 }
