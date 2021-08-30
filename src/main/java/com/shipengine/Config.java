@@ -1,6 +1,9 @@
 package com.shipengine;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Config {
     private String apiKey;
@@ -111,6 +114,45 @@ public class Config {
                 timeout,
                 retries,
                 pageSize
+        );
+    }
+
+    public Config merge(Map<String, Object> newConfig) {
+        Map<String, Object> config = new HashMap<>();
+        List<String> configKeys = Arrays.asList("apiKey", "timeout", "retries", "pageSize");
+
+        if (newConfig.isEmpty()) {
+            return this;
+        } else {
+            if (newConfig.containsKey(configKeys.get(0))) {
+                config.put(configKeys.get(0), newConfig.get(configKeys.get(0)));
+            } else {
+                config.put(configKeys.get(0), this.apiKey);
+            }
+
+            if (newConfig.containsKey(configKeys.get(1))) {
+                config.put(configKeys.get(1), newConfig.get(configKeys.get(1)));
+            } else {
+                config.put(configKeys.get(1), this.timeout);
+            }
+
+            if (newConfig.containsKey(configKeys.get(2))) {
+                config.put(configKeys.get(2), newConfig.get(configKeys.get(2)));
+            } else {
+                config.put(configKeys.get(2), this.retries);
+            }
+
+            if (newConfig.containsKey(configKeys.get(3))) {
+                config.put(configKeys.get(3), newConfig.get(configKeys.get(3)));
+            } else {
+                config.put(configKeys.get(3), this.pageSize);
+            }
+        }
+        return new Config(
+                config.get("apiKey").toString(),
+                java.lang.Integer.parseInt(config.get("timeout").toString()),
+                java.lang.Integer.parseInt(config.get("retries").toString()),
+                java.lang.Integer.parseInt(config.get("pageSize").toString())
         );
     }
 }
