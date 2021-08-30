@@ -149,10 +149,10 @@ public class Config {
             }
         }
         return new Config(
-                config.get("apiKey").toString(),
-                java.lang.Integer.parseInt(config.get("timeout").toString()),
-                java.lang.Integer.parseInt(config.get("retries").toString()),
-                java.lang.Integer.parseInt(config.get("pageSize").toString())
+                config.get(configKeys.get(0)).toString(),
+                java.lang.Integer.parseInt(config.get(configKeys.get(1)).toString()),
+                java.lang.Integer.parseInt(config.get(configKeys.get(2)).toString()),
+                java.lang.Integer.parseInt(config.get(configKeys.get(3)).toString())
         );
     }
 }

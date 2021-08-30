@@ -35,12 +35,13 @@ public class ShipEngine {
     }
 
     public Map listCarriers() {
+        Config mergedConfig = this.config.merge();
         Map apiResponse = Map.of();
         InternalClient client = new InternalClient();
         try {
             apiResponse = client.get(
                     "/v1/carriers",
-                    config
+                    mergedConfig
             );
             return apiResponse;
         } catch (Exception e) {
@@ -49,8 +50,20 @@ public class ShipEngine {
         return apiResponse;
     }
 
-    public String listCarriers(Config config) {
-        return config.getBaseUrl();
+    public Map listCarriers(Map<String, Object> config) {
+        Config mergedConfig = this.config.merge(config);
+        Map apiResponse = Map.of();
+        InternalClient client = new InternalClient();
+        try {
+            apiResponse = client.get(
+                    "/v1/carriers",
+                    mergedConfig
+            );
+            return apiResponse;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
     }
 
     public String trackUsingCarrierCodeAndTrackingNumber() {
