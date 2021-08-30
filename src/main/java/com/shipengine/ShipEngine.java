@@ -1,5 +1,6 @@
 package com.shipengine;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ShipEngine {
@@ -17,17 +18,39 @@ public class ShipEngine {
         return config;
     }
 
-    public String validateAddresses(List address, Config config) {
+    public HashMap validateAddresses(List address, Config config) {
+        // TODO: add in merge where config is passed in and fix config param to be seperate args instead of an obj
+        Config newConfig = this.config.merge(config);
         InternalClient client = new InternalClient();
-        client.post(
-                "/v1/addresses/validate",
-                "",
-                config
-        );
-        return config.getBaseUrl();
+        try {
+            return client.post(
+                    "/v1/addresses/validate",
+                    address,
+                    config
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public HashMap validateAddresses(List address) {
+        InternalClient client = new InternalClient();
+        try {
+            return client.post(
+                    "/v1/addresses/validate",
+                    address,
+                    config
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String listCarriers() {
+        return config.getBaseUrl();
+    }
+
+    public String listCarriers(Config config) {
         return config.getBaseUrl();
     }
 

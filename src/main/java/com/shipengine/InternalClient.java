@@ -12,15 +12,14 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-
 public class InternalClient {
-    private enum HTTPVerbs {
+    private enum HttpVerbs {
         GET,
         POST,
         PUT,
@@ -30,15 +29,14 @@ public class InternalClient {
     private HashMap requestLoop(
             String httpMethod,
             String endpoint,
-            Optional<HashMap> body,
+            Optional body,
             Config config
     ) throws URISyntaxException, IOException, InterruptedException {
         int retry = 0;
         HashMap apiResponse;
         while (retry <= config.getRetries()) {
             try {
-                apiResponse = sendHTTPRequest();
-//                apiResponse = sendHTTPRequest();
+                apiResponse = sendHttpRequest();
             } catch (Exception err) {
                 if ((retry < config.getRetries()) &&
                         (err instanceof RateLimitExceededException) &&
@@ -46,41 +44,50 @@ public class InternalClient {
                     try {
                         java.util.concurrent.TimeUnit.SECONDS.sleep(((RateLimitExceededException) err).getRetryAfter());
                         retry++;
-//                        continue;
+                        // continue;
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 } else {
                     throw err;
                 }
-//                return apiResponse;
+                // return apiResponse;
             }
             return apiResponse;
         }
-//        return apiResponse;
+        // return apiResponse;
     }
 
-    private HashMap sendHTTPRequest(
+    private HashMap sendHttpRequest(
             String httpMethod,
             String endpoint,
             HashMap requestBody,
             int retry,
             Config config
     ) throws URISyntaxException, IOException, InterruptedException {
-        if (httpMethod.equals(HTTPVerbs.POST.name())) {
+        if (httpMethod.equals(HttpVerbs.POST.name())) {
             return internalPost(endpoint, requestBody, config);
-        } else if (httpMethod.equals(HTTPVerbs.GET.name())) {
+        } else if (httpMethod.equals(HttpVerbs.GET.name())) {
             return internalGet(endpoint, config);
-        } else if (httpMethod.equals(HTTPVerbs.PUT.name())) {
+        } else if (httpMethod.equals(HttpVerbs.PUT.name())) {
             return internalPut(endpoint, requestBody, config);
-        } else if (httpMethod.equals(HTTPVerbs.DELETE.name())) {
+        } else if (httpMethod.equals(HttpVerbs.DELETE.name())) {
             return internalDelete(endpoint, config);
         }
     }
 
+    public HashMap post(String endpoint, List body, Config config) throws URISyntaxException, IOException, InterruptedException {
+        return requestLoop(
+                HttpVerbs.POST.name(),
+                endpoint,
+                Optional.of(body),
+                config
+        );
+    }
+
     public HashMap post(String endpoint, HashMap body, Config config) throws URISyntaxException, IOException, InterruptedException {
         return requestLoop(
-                HTTPVerbs.POST.name(),
+                HttpVerbs.POST.name(),
                 endpoint,
                 Optional.of(body),
                 config
@@ -89,7 +96,7 @@ public class InternalClient {
 
     public HashMap put(String endpoint, HashMap body, Config config) throws URISyntaxException, IOException, InterruptedException {
         return requestLoop(
-                HTTPVerbs.PUT.name(),
+                HttpVerbs.PUT.name(),
                 endpoint,
                 Optional.of(body),
                 config
@@ -98,7 +105,7 @@ public class InternalClient {
 
     public HashMap get(String endpoint, Config config) throws URISyntaxException, IOException, InterruptedException {
         return requestLoop(
-                HTTPVerbs.GET.name(),
+                HttpVerbs.GET.name(),
                 endpoint,
                 Optional.empty(),
                 config
@@ -107,7 +114,7 @@ public class InternalClient {
 
     public HashMap delete(String endpoint, Config config) throws URISyntaxException, IOException, InterruptedException {
         return requestLoop(
-                HTTPVerbs.DELETE.name(),
+                HttpVerbs.DELETE.name(),
                 endpoint,
                 Optional.empty(),
                 config
