@@ -1,9 +1,13 @@
 package com.shipengine;
 
+import com.shipengine.exception.InvalidFieldValueException;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Config {
     private String apiKey;
@@ -43,7 +47,15 @@ public class Config {
      * Set the ShipEngine API key.
      */
     public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
+        Pattern regexPattern = Pattern.compile("[\\s]");
+        Matcher matcher = regexPattern.matcher(apiKey);
+        if (apiKey.length() == 0) {
+            throw new InvalidFieldValueException("apiKey", apiKey);
+        } else if (matcher.matches()) {
+            throw new InvalidFieldValueException("apiKey", apiKey);
+        } else {
+            this.apiKey = apiKey;
+        }
     }
 
     /*
