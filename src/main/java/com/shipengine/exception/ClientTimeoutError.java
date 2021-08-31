@@ -1,17 +1,16 @@
 package com.shipengine.exception;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ClientTimeoutError extends ShipEngineException {
 
-    int retryAfter;
+    public int retryAfter;
 
-    ErrorSource source;
+    public ErrorSource source;
 
-    String requestID;
+    public String requestID;
 
-    public ClientTimeoutError(String requestID, ErrorSource source, int retryAfter) throws MalformedURLException {
+    public ClientTimeoutError(String requestID, ErrorSource source, int retryAfter) {
         super(
                 String.format("The request took longer than the %s seconds allowed.", retryAfter),
                 requestID,

@@ -116,23 +116,23 @@ public class ShipEngineException extends RuntimeException {
         return url;
     }
 
-    public void setRequestID(String requestID) {
+    private void setRequestID(String requestID) {
         this.requestID = requestID;
     }
 
-    public void setSource(ErrorSource source) {
+    private void setSource(ErrorSource source) {
         this.source = source;
     }
 
-    public void setType(ErrorType type) {
+    private void setType(ErrorType type) {
         this.type = type;
     }
 
-    public void setCode(ErrorCode code) {
+    private void setCode(ErrorCode code) {
         this.code = code;
     }
 
-    public void setUrl(URL url) {
+    private void setUrl(URL url) {
         this.url = url;
     }
 

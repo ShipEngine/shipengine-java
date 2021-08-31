@@ -1,6 +1,5 @@
 package com.shipengine.exception;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -21,7 +20,7 @@ public class InvalidFieldValueException extends ShipEngineException {
         return fieldName;
     }
 
-    public void setFieldName(String fieldName) {
+    private void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
@@ -29,14 +28,14 @@ public class InvalidFieldValueException extends ShipEngineException {
         return fieldValue;
     }
 
-    public void setFieldValue(String fieldValue) {
+    private void setFieldValue(String fieldValue) {
         this.fieldValue = fieldValue;
     }
 
     public InvalidFieldValueException(
             String fieldName,
             String fieldValue
-    ) throws MalformedURLException {
+    ) {
         super(
                 String.format("%s - %s was provided.", fieldName, fieldValue),
                 "",
