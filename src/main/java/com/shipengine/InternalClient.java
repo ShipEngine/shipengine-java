@@ -12,15 +12,14 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.List;
 
 public class InternalClient {
-    private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     /**
      * Enumeration of frequently used HTTP verbs to be used when making requests with the client.
@@ -36,11 +35,10 @@ public class InternalClient {
      * This is the request loop that manages the clients retry logic when interacting with ShipEngine API.
      * This method takes in the request body as a Map or HashMap.
      *
-     *
      * @param httpMethod The HTTP Verb to set as the HTTP Method in the request.
-     * @param endpoint A string representation of the target API endpoint for the request.
-     * @param body A Map or HashMap that contains the request body contents.
-     * @param config The global Config object for the ShipEngine SDK.
+     * @param endpoint   A string representation of the target API endpoint for the request.
+     * @param body       A Map or HashMap that contains the request body contents.
+     * @param config     The global Config object for the ShipEngine SDK.
      * @return Map The response from ShipEngine API serialized into a Map/HashMap.
      */
     private Map requestLoop(
@@ -85,9 +83,9 @@ public class InternalClient {
      * This method override takes in the request body as a List or Array.
      *
      * @param httpMethod The HTTP Verb to set as the HTTP Method in the request.
-     * @param endpoint A string representation of the target API endpoint for the request.
-     * @param body A Map or HashMap that contains the request body contents.
-     * @param config The global Config object for the ShipEngine SDK.
+     * @param endpoint   A string representation of the target API endpoint for the request.
+     * @param body       A Map or HashMap that contains the request body contents.
+     * @param config     The global Config object for the ShipEngine SDK.
      * @return List The response from ShipEngine API serialized into a List/Array.
      */
     private List requestLoop(
@@ -132,8 +130,8 @@ public class InternalClient {
      * This method override does not take in a *body* argument (e.g. Servicing a GET request).
      *
      * @param httpMethod The HTTP Verb to set as the HTTP Method in the request.
-     * @param endpoint A string representation of the target API endpoint for the request.
-     * @param config The global Config object for the ShipEngine SDK.
+     * @param endpoint   A string representation of the target API endpoint for the request.
+     * @param config     The global Config object for the ShipEngine SDK.
      * @return Map The response from ShipEngine API serialized into a List/Array.
      */
     private Map requestLoop(
@@ -217,7 +215,11 @@ public class InternalClient {
         return apiResponse;
     }
 
-    public List post(String endpoint, List body, Config config) throws URISyntaxException, IOException, InterruptedException {
+    public List<HashMap<String, String>> post(
+            String endpoint,
+            List<HashMap<String, String>> body,
+            Config config
+    ) throws URISyntaxException, IOException, InterruptedException {
         return requestLoop(
                 HttpVerbs.POST.name(),
                 endpoint,
@@ -307,7 +309,7 @@ public class InternalClient {
         return apiResponseToMap(apiResponse);
     }
 
-    private List internalPost(String endpoint, List requestBody, Config config) throws URISyntaxException, IOException, InterruptedException {
+    private List internalPost(String endpoint, List<HashMap<String , String>> requestBody, Config config) throws URISyntaxException, IOException, InterruptedException {
         //  List<String> preppedBody = Arrays.asList();
         //  if (requestBody.size() > 1) {
         //      for (Object k : requestBody) {
@@ -361,6 +363,12 @@ public class InternalClient {
     }
 
     private static List apiResponseToList(String apiResponse) {
-        return gson.fromJson(apiResponse, List.class);
+        List<HashMap> newList = new ArrayList<>();
+        List apiResponseAsList = gson.fromJson(apiResponse, List.class);
+        for (Object k : apiResponseAsList) {
+            String temp = gson.toJson(k);
+            newList.add(gson.fromJson(temp, HashMap.class));
+        }
+        return newList;
     }
 }

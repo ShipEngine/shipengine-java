@@ -32,25 +32,24 @@ public class ShipEngineTest {
     /**
      * Testing Address Validation with a valid address.
      */
-//    @Test
-//    public void successfulAddressValidation() {
-//        List<HashMap<String , String>> unvalidatedAddress = Arrays.asList(
-//                new HashMap<String , String>() {{
-//                    put("name", "ShipEngine");
-//                    put("company", "Auctane");
-//                    put("phone", "1-123-456-7891");
-//                    put("address_line1", "3800 N Lamar Blvd");
-//                    put("address_line2", "ste 220");
-//                    put("city_locality", "Austin");
-//                    put("state_province", "TX");
-//                    put("postal_code", "78756");
-//                    put("country_code", "US");
-//                    put("address_residential_indicator", "unknown");
-//                }}
-//        );
-//        List validatedAddress = new ShipEngine(apiKey).validateAddresses(unvalidatedAddress);
-//        System.out.println("validatedAddress = " + validatedAddress);
-//    }
+    @Test
+    public void successfulAddressValidation() {
+        HashMap<String, String> stubAddress = new HashMap<>();
+        stubAddress.put("name", "ShipEngine");
+        stubAddress.put("company", "Auctane");
+        stubAddress.put("phone", "1-123-456-7891");
+        stubAddress.put("address_line1", "3800 N Lamar Blvd");
+        stubAddress.put("address_line2", "ste 220");
+        stubAddress.put("city_locality", "Austin");
+        stubAddress.put("state_province", "TX");
+        stubAddress.put("postal_code", "78756");
+        stubAddress.put("country_code", "US");
+        stubAddress.put("address_residential_indicator", "unknown");
+
+        List<HashMap<String , String>> unvalidatedAddress = List.of(stubAddress);
+        List validatedAddress = new ShipEngine(apiKey).validateAddresses(unvalidatedAddress);
+        assertEquals(HashMap.class, validatedAddress.get(0).getClass());
+    }
 
     /**
      * Testing successful call to listCarriers which fetches all
@@ -59,6 +58,6 @@ public class ShipEngineTest {
     @Test
     public void successfulListCarriers() {
         Map listOfCarriers = new ShipEngine(apiKey).listCarriers();
-        System.out.println("listOfCarriers = " + listOfCarriers);
+        assertEquals(HashMap.class, listOfCarriers.getClass());
     }
 }

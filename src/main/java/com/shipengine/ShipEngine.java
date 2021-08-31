@@ -1,5 +1,7 @@
 package com.shipengine;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,9 +20,9 @@ public class ShipEngine {
         return config;
     }
 
-    public List validateAddresses(List address) {
+    public List validateAddresses(List<HashMap<String , String>> address) {
         Config mergedConfig = this.config.merge();
-        List apiResponse = List.of();
+        List<HashMap<String , String>> apiResponse = new ArrayList<>();
         InternalClient client = new InternalClient();
         try {
             apiResponse = client.post(
@@ -35,9 +37,9 @@ public class ShipEngine {
         return apiResponse;
     }
 
-    public List<Map<String, String>> validateAddresses(List<Map<String, String>> address, Map<String, Object> config) {
+    public List validateAddresses(List<HashMap<String , String>> address, Map<String, Object> config) {
         Config mergedConfig = this.config.merge(config);
-        List<Map<String , String>> apiResponse = List.of();
+        List<HashMap<String , String>> apiResponse = new ArrayList<>();
         InternalClient client = new InternalClient();
         try {
             apiResponse = client.post(
@@ -54,7 +56,7 @@ public class ShipEngine {
 
     public Map listCarriers() {
         Config mergedConfig = this.config.merge();
-        Map apiResponse = Map.of();
+        Map apiResponse = new HashMap<>();
         InternalClient client = new InternalClient();
         try {
             apiResponse = client.get(
@@ -70,7 +72,7 @@ public class ShipEngine {
 
     public Map listCarriers(Map<String, Object> config) {
         Config mergedConfig = this.config.merge(config);
-        Map apiResponse = Map.of();
+        Map apiResponse = new HashMap<>();
         InternalClient client = new InternalClient();
         try {
             apiResponse = client.get(
