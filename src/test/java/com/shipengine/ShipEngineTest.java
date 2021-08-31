@@ -1,8 +1,8 @@
 package com.shipengine;
 
+import com.shipengine.util.Constants;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,22 +13,6 @@ import static org.junit.Assert.assertEquals;
  * Unit test for simple App.
  */
 public class ShipEngineTest {
-    /**
-     * A stub Api-Key to be used for testing
-     */
-    private final String apiKey = "TEST_vMiVbICUjBz4BZjq0TRBLC/9MrxY4+yjvb1G1RMxlJs";
-
-    /**
-     * Rigorous Test :-)
-     */
-    @Test
-    public void shouldAnswerWithTrue() {
-        assertEquals(
-                new ShipEngine(apiKey).trackUsingCarrierCodeAndTrackingNumber(),
-                "https://api.shipengine.com/"
-        );
-    }
-
     /**
      * Testing Address Validation with a valid address.
      */
@@ -46,8 +30,8 @@ public class ShipEngineTest {
         stubAddress.put("country_code", "US");
         stubAddress.put("address_residential_indicator", "unknown");
 
-        List<HashMap<String , String>> unvalidatedAddress = List.of(stubAddress);
-        List validatedAddress = new ShipEngine(apiKey).validateAddresses(unvalidatedAddress);
+        List<HashMap<String, String>> unvalidatedAddress = List.of(stubAddress);
+        List validatedAddress = new ShipEngine(Constants.API_KEY).validateAddresses(unvalidatedAddress);
         assertEquals(HashMap.class, validatedAddress.get(0).getClass());
     }
 
@@ -57,7 +41,7 @@ public class ShipEngineTest {
      */
     @Test
     public void successfulListCarriers() {
-        Map listOfCarriers = new ShipEngine(apiKey).listCarriers();
+        Map listOfCarriers = new ShipEngine(Constants.API_KEY).listCarriers();
         assertEquals(HashMap.class, listOfCarriers.getClass());
     }
 }
