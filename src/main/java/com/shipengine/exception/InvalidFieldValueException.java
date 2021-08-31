@@ -1,5 +1,6 @@
 package com.shipengine.exception;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -35,7 +36,7 @@ public class InvalidFieldValueException extends ShipEngineException {
     public InvalidFieldValueException(
             String fieldName,
             String fieldValue
-    ) {
+    ) throws MalformedURLException {
         super(
                 String.format("%s - %s was provided.", fieldName, fieldValue),
                 "",

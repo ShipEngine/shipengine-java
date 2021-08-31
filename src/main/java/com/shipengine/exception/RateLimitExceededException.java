@@ -1,5 +1,6 @@
 package com.shipengine.exception;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -10,7 +11,7 @@ public class RateLimitExceededException extends ShipEngineException {
     /**
      * The amount of time (in milliseconds) to wait before retrying the request.
      */
-    private int retryAfter;
+    public int retryAfter;
 
     public int getRetryAfter() {
         return retryAfter;
@@ -22,7 +23,7 @@ public class RateLimitExceededException extends ShipEngineException {
 
     public RateLimitExceededException(
             String requestID, ErrorSource source, int retryAfter
-    ) {
+    ) throws MalformedURLException {
         super(
                 "You have exceeded the rate limit.",
                 requestID,
