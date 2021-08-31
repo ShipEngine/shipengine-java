@@ -12,6 +12,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -228,7 +229,11 @@ public class InternalClient {
         );
     }
 
-    public Map post(String endpoint, Map body, Config config) throws URISyntaxException, IOException, InterruptedException {
+    public Map post(
+            String endpoint,
+            Map body,
+            Config config
+    ) throws URISyntaxException, IOException, InterruptedException {
         return requestLoop(
                 HttpVerbs.POST.name(),
                 endpoint,
@@ -237,7 +242,11 @@ public class InternalClient {
         );
     }
 
-    public Map put(String endpoint, Map body, Config config) throws URISyntaxException, IOException, InterruptedException {
+    public Map put(
+            String endpoint,
+            Map body,
+            Config config
+    ) throws URISyntaxException, IOException, InterruptedException {
         return requestLoop(
                 HttpVerbs.PUT.name(),
                 endpoint,
@@ -246,7 +255,10 @@ public class InternalClient {
         );
     }
 
-    public Map get(String endpoint, Config config) throws URISyntaxException, IOException, InterruptedException {
+    public Map get(
+            String endpoint,
+            Config config
+    ) throws URISyntaxException, IOException, InterruptedException {
         return requestLoop(
                 HttpVerbs.GET.name(),
                 endpoint,
@@ -254,7 +266,10 @@ public class InternalClient {
         );
     }
 
-    public Map delete(String endpoint, Config config) throws URISyntaxException, IOException, InterruptedException {
+    public Map delete(
+            String endpoint,
+            Config config
+    ) throws URISyntaxException, IOException, InterruptedException {
         return requestLoop(
                 HttpVerbs.DELETE.name(),
                 endpoint,
@@ -262,7 +277,10 @@ public class InternalClient {
         );
     }
 
-    private HttpRequest.Builder prepareRequest(String endpoint, Config config) throws URISyntaxException {
+    private HttpRequest.Builder prepareRequest(
+            String endpoint,
+            Config config
+    ) throws URISyntaxException {
         Pattern pattern = Pattern.compile("/");
         String baseUri;
         if (endpoint.length() > 0) {
@@ -283,7 +301,9 @@ public class InternalClient {
 
     }
 
-    private String sendPreparedRequest(HttpRequest preparedRequest) throws IOException, InterruptedException {
+    private String sendPreparedRequest(
+            HttpRequest preparedRequest
+    ) throws IOException, InterruptedException {
         return HttpClient
                 .newBuilder()
                 .build()
@@ -291,7 +311,10 @@ public class InternalClient {
                 .body();
     }
 
-    private Map internalDelete(String endpoint, Config config) throws URISyntaxException, IOException, InterruptedException {
+    private Map internalDelete(
+            String endpoint,
+            Config config
+    ) throws URISyntaxException, IOException, InterruptedException {
         HttpRequest request = prepareRequest(endpoint, config)
                 .DELETE()
                 .build();
@@ -300,7 +323,10 @@ public class InternalClient {
         return apiResponseToMap(apiResponse);
     }
 
-    private Map internalGet(String endpoint, Config config) throws URISyntaxException, IOException, InterruptedException {
+    private Map internalGet(
+            String endpoint,
+            Config config
+    ) throws URISyntaxException, IOException, InterruptedException {
         HttpRequest request = prepareRequest(endpoint, config)
                 .GET()
                 .build();
@@ -309,16 +335,11 @@ public class InternalClient {
         return apiResponseToMap(apiResponse);
     }
 
-    private List internalPost(String endpoint, List<HashMap<String , String>> requestBody, Config config) throws URISyntaxException, IOException, InterruptedException {
-        //  List<String> preppedBody = Arrays.asList();
-        //  if (requestBody.size() > 1) {
-        //      for (Object k : requestBody) {
-        //          preppedBody.add(objectToJson(k));
-        //      }
-        //  }
-        //  for (Object k : requestBody) {
-        //      preppedBody.add(objectToJson(k));
-        //  }
+    private List internalPost(
+            String endpoint,
+            List<HashMap<String , String>> requestBody,
+            Config config
+    ) throws URISyntaxException, IOException, InterruptedException {
         String preppedRequest = gson.toJson(requestBody);
         HttpRequest request = prepareRequest(endpoint, config)
                 .POST(HttpRequest.BodyPublishers.ofString(preppedRequest))
@@ -328,7 +349,11 @@ public class InternalClient {
         return apiResponseToList(apiResponse);
     }
 
-    private Map internalPost(String endpoint, Map requestBody, Config config) throws URISyntaxException, IOException, InterruptedException {
+    private Map internalPost(
+            String endpoint,
+            Map requestBody,
+            Config config
+    ) throws URISyntaxException, IOException, InterruptedException {
         HttpRequest request = prepareRequest(endpoint, config)
                 .POST(HttpRequest.BodyPublishers.ofString(hashMapToJson(requestBody)))
                 .build();
@@ -337,7 +362,11 @@ public class InternalClient {
         return apiResponseToMap(apiResponse);
     }
 
-    private Map internalPut(String endpoint, Map requestBody, Config config) throws URISyntaxException, IOException, InterruptedException {
+    private Map internalPut(
+            String endpoint,
+            Map requestBody,
+            Config config
+    ) throws URISyntaxException, IOException, InterruptedException {
         HttpRequest request = prepareRequest(endpoint, config)
                 .PUT(HttpRequest.BodyPublishers.ofString(hashMapToJson(requestBody)))
                 .build();
