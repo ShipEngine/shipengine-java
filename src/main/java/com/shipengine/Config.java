@@ -108,15 +108,6 @@ public class Config {
         return new Config(apiKey);
     }
 
-    public Config merge(String apiKey, int timeout, int retries, int pageSize) {
-        return new Config(
-                apiKey,
-                timeout,
-                retries,
-                pageSize
-        );
-    }
-
     public Config merge(Map<String, Object> newConfig) {
         Map<String, Object> config = new HashMap<>();
         List<String> configKeys = Arrays.asList("apiKey", "timeout", "retries", "pageSize");
@@ -127,19 +118,19 @@ public class Config {
             if (newConfig.containsKey(configKeys.get(0))) {
                 config.put(configKeys.get(0), newConfig.get(configKeys.get(0)));
             } else {
-                config.put(configKeys.get(0), this.apiKey);
+                config.put(configKeys.get(0), this.getApiKey());
             }
 
             if (newConfig.containsKey(configKeys.get(1))) {
                 config.put(configKeys.get(1), newConfig.get(configKeys.get(1)));
             } else {
-                config.put(configKeys.get(1), this.timeout);
+                config.put(configKeys.get(1), this.getTimeout());
             }
 
             if (newConfig.containsKey(configKeys.get(2))) {
                 config.put(configKeys.get(2), newConfig.get(configKeys.get(2)));
             } else {
-                config.put(configKeys.get(2), this.retries);
+                config.put(configKeys.get(2), this.getRetries());
             }
 
             if (newConfig.containsKey(configKeys.get(3))) {

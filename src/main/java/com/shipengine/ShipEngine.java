@@ -19,13 +19,31 @@ public class ShipEngine {
     }
 
     public List validateAddresses(List address) {
+        Config mergedConfig = this.config.merge();
         List apiResponse = List.of();
         InternalClient client = new InternalClient();
         try {
             apiResponse = client.post(
                     "/v1/addresses/validate",
                     address,
-                    config
+                    mergedConfig
+            );
+            return apiResponse;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
+    }
+
+    public List<Map<String, String>> validateAddresses(List<Map<String, String>> address, Map<String, Object> config) {
+        Config mergedConfig = this.config.merge(config);
+        List<Map<String , String>> apiResponse = List.of();
+        InternalClient client = new InternalClient();
+        try {
+            apiResponse = client.post(
+                    "/v1/addresses/validate",
+                    address,
+                    mergedConfig
             );
             return apiResponse;
         } catch (Exception e) {
