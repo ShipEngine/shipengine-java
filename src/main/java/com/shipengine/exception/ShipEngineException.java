@@ -1,5 +1,6 @@
 package com.shipengine.exception;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -69,7 +70,7 @@ public class ShipEngineException extends RuntimeException {
      * error) then this is the unique ID of the HTTP request that returned the
      * error. You can use this ID when contacting ShipEngine support for help.
      */
-    String requestID;
+    private String requestID;
 
     /**
      * Indicates where the error originated. This lets you know whether you should
@@ -78,7 +79,7 @@ public class ShipEngineException extends RuntimeException {
      *
      * @see <a href="https://www.shipengine.com/docs/errors/codes/#error-source">...</a>
      */
-    ErrorSource source;
+    private ErrorSource source;
 
     /**
      * Indicates the type of error that occurred, such as a validation error, a
@@ -86,7 +87,7 @@ public class ShipEngineException extends RuntimeException {
      *
      * @see <a href="https://www.shipengine.com/docs/errors/codes/#error-type">...</a>
      */
-    ErrorType type;
+    private ErrorType type;
 
     /**
      * A code that indicates the specific error that occurred, such as missing a
@@ -94,46 +95,50 @@ public class ShipEngineException extends RuntimeException {
      *
      * @see <a href="https://www.shipengine.com/docs/errors/codes/#error-code">...</a>
      */
-    ErrorCode code;
+    private ErrorCode code;
 
-    public String getRequestID() {
+    private String getRequestID() {
         return requestID;
     }
 
-    public ErrorSource getSource() {
+    private ErrorSource getSource() {
         return source;
     }
 
-    public ErrorType getType() {
+    private ErrorType getType() {
         return type;
     }
 
-    public ErrorCode getCode() {
+    private ErrorCode getCode() {
         return code;
     }
 
-    public URL getUrl() {
+    private URL getUrl() {
         return url;
     }
 
-    public void setRequestID(String requestID) {
+    private void setRequestID(String requestID) {
         this.requestID = requestID;
     }
 
-    public void setSource(ErrorSource source) {
+    private void setSource(ErrorSource source) {
         this.source = source;
     }
 
-    public void setType(ErrorType type) {
+    private void setType(ErrorType type) {
         this.type = type;
     }
 
-    public void setCode(ErrorCode code) {
+    private void setCode(ErrorCode code) {
         this.code = code;
     }
 
-    public void setUrl(URL url) {
-        this.url = url;
+    private void setUrl(String url) {
+        try {
+            this.url = new URL(url);
+        } catch (MalformedURLException err) {
+            err.printStackTrace();
+        }
     }
 
     /**
@@ -148,7 +153,7 @@ public class ShipEngineException extends RuntimeException {
             ErrorSource source,
             ErrorType type,
             ErrorCode code,
-            URL url
+            String url
     ) {
         super(message);
         this.setRequestID(requestID);

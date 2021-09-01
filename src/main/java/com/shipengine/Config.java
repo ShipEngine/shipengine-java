@@ -1,10 +1,18 @@
 package com.shipengine;
 
+import com.shipengine.exception.InvalidFieldValueException;
+import com.shipengine.util.Constants;
+
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Config {
     private String apiKey;
-    private String baseUrl = "https://api.shipengine.com/";
+    private String baseUrl = Constants.BASE_URL;
     private int pageSize = 5000;
     private int retries = 1;
     private int timeout = 50;
@@ -39,8 +47,17 @@ public class Config {
     /*
      * Set the ShipEngine API key.
      */
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
+    public void setApiKey(String apiKey) throws InvalidFieldValueException {
+        String apiKeyStr = "apiKey";
+        Pattern regexPattern = Pattern.compile("[\\s]");
+        Matcher matcher = regexPattern.matcher(apiKey);
+        if (apiKey.length() == 0) {
+            throw new InvalidFieldValueException(apiKeyStr, apiKey);
+        } else if (matcher.matches()) {
+            throw new InvalidFieldValueException(apiKeyStr, apiKey);
+        } else {
+            this.apiKey = apiKey;
+        }
     }
 
     /*
@@ -105,12 +122,42 @@ public class Config {
         return new Config(apiKey);
     }
 
-    public Config merge(String apiKey, int timeout, int retries, int pageSize) {
+    public Config merge(Map<String, Object> newConfig) {
+        Map<String, Object> config = new HashMap<>();
+        List<String> configKeys = Arrays.asList("apiKey", "timeout", "retries", "pageSize");
+
+        if (newConfig.isEmpty()) {
+            return this;
+        } else {
+            if (newConfig.containsKey(configKeys.get(0))) {
+                config.put(configKeys.get(0), newConfig.get(configKeys.get(0)));
+            } else {
+                config.put(configKeys.get(0), this.getApiKey());
+            }
+
+            if (newConfig.containsKey(configKeys.get(1))) {
+                config.put(configKeys.get(1), newConfig.get(configKeys.get(1)));
+            } else {
+                config.put(configKeys.get(1), this.getTimeout());
+            }
+
+            if (newConfig.containsKey(configKeys.get(2))) {
+                config.put(configKeys.get(2), newConfig.get(configKeys.get(2)));
+            } else {
+                config.put(configKeys.get(2), this.getRetries());
+            }
+
+            if (newConfig.containsKey(configKeys.get(3))) {
+                config.put(configKeys.get(3), newConfig.get(configKeys.get(3)));
+            } else {
+                config.put(configKeys.get(3), this.pageSize);
+            }
+        }
         return new Config(
-                apiKey,
-                timeout,
-                retries,
-                pageSize
+                config.get(configKeys.get(0)).toString(),
+                java.lang.Integer.parseInt(config.get(configKeys.get(1)).toString()),
+                java.lang.Integer.parseInt(config.get(configKeys.get(2)).toString()),
+                java.lang.Integer.parseInt(config.get(configKeys.get(3)).toString())
         );
     }
 }

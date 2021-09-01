@@ -1,8 +1,5 @@
 package com.shipengine.exception;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 /**
  * This error occurs when a field has been set to an invalid value.
  */
@@ -21,7 +18,7 @@ public class InvalidFieldValueException extends ShipEngineException {
         return fieldName;
     }
 
-    public void setFieldName(String fieldName) {
+    private void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
@@ -29,21 +26,21 @@ public class InvalidFieldValueException extends ShipEngineException {
         return fieldValue;
     }
 
-    public void setFieldValue(String fieldValue) {
+    private void setFieldValue(String fieldValue) {
         this.fieldValue = fieldValue;
     }
 
     public InvalidFieldValueException(
             String fieldName,
             String fieldValue
-    ) throws MalformedURLException {
+    ) {
         super(
-                String.format("%s - %s was provided.", fieldName, fieldValue),
+                String.format("%s - \"%s\" was provided.", fieldName, fieldValue),
                 "",
                 ErrorSource.SHIPENGINE,
                 ErrorType.VALIDATION,
                 ErrorCode.INVALID_FIELD_VALUE,
-                new URL("https://www.shipengine.com/docs/")
+                "https://www.shipengine.com/docs/"
         );
         this.setFieldName(fieldName);
         this.setFieldValue(fieldValue);

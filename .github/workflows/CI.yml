@@ -38,6 +38,9 @@ jobs:
           java-version: ${{ matrix.java-version }}
           architecture: x64
 
+      - name: Install dependencies
+        run: mvn install
+
       - name: Lint the code
         run: mvn checkstyle:checkstyle
 
