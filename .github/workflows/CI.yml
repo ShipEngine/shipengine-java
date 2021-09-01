@@ -39,10 +39,10 @@ jobs:
           architecture: x64
 
       - name: Install dependencies
-        run: mvn install
+        run: mvn -X install
 
       - name: Lint the code
-        run: mvn checkstyle:checkstyle
+        run: mvn -X checkstyle:checkstyle
 
       - name: Run test suite
         run: mvn test
