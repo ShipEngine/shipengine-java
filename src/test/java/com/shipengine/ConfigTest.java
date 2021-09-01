@@ -19,7 +19,7 @@ public class ConfigTest {
     public void shouldAllowApiKeyOnlyConstructor() {
         ShipEngine client = new ShipEngine(Constants.API_KEY);
 
-        assertEquals(client.getConfig().getApiKey(), Constants.API_KEY);
+        assertEquals(Constants.API_KEY, client.getConfig().getApiKey());
     }
 
     /**
@@ -30,7 +30,7 @@ public class ConfigTest {
     public void shouldReturnGlobalConfigFromEmptyMergeCall() {
         ShipEngine client = new ShipEngine(Constants.API_KEY);
 
-        assertEquals(client.getConfig().merge().getClass(), Config.class);
+        assertEquals(Config.class, client.getConfig().merge().getClass());
     }
 
     /**
@@ -44,13 +44,5 @@ public class ConfigTest {
         newConfig.put("retries", 3);
         Map result = client.listCarriers(newConfig);
         assertEquals(result.getClass(), HashMap.class);
-    }
-
-    /**
-     * Does not allow an empty string
-     */
-    @Test
-    public void shouldNotAllowAnEmptyApiKeyString() {
-        new ShipEngine("");
     }
 }

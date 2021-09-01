@@ -3,6 +3,7 @@ package com.shipengine;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shipengine.exception.RateLimitExceededException;
+import com.shipengine.exception.ShipEngineException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -47,7 +48,7 @@ public class InternalClient {
             String endpoint,
             Map body,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) throws InterruptedException {
         int retry = 0;
         Map apiResponse = Map.of();
         while (retry <= config.getRetries()) {
@@ -66,7 +67,7 @@ public class InternalClient {
                         java.util.concurrent.TimeUnit.SECONDS.sleep(((RateLimitExceededException) err).getRetryAfter());
                         retry++;
                         // continue;
-                    } catch (InterruptedException e) {
+                    } catch (RuntimeException e) {
                         e.printStackTrace();
                     }
                 } else {
@@ -89,12 +90,12 @@ public class InternalClient {
      * @param config     The global Config object for the ShipEngine SDK.
      * @return List The response from ShipEngine API serialized into a List/Array.
      */
-    private List requestLoop(
+    private List<HashMap<String, String>> requestLoop(
             String httpMethod,
             String endpoint,
-            List body,
+            List<HashMap<String ,String>> body,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) throws InterruptedException {
         int retry = 0;
         List apiResponse = List.of();
         while (retry <= config.getRetries()) {
@@ -113,7 +114,7 @@ public class InternalClient {
                         java.util.concurrent.TimeUnit.SECONDS.sleep(((RateLimitExceededException) err).getRetryAfter());
                         retry++;
                         // continue;
-                    } catch (InterruptedException e) {
+                    } catch (RuntimeException e) {
                         e.printStackTrace();
                     }
                 } else {
@@ -139,7 +140,7 @@ public class InternalClient {
             String httpMethod,
             String endpoint,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) throws InterruptedException {
         int retry = 0;
         Map apiResponse = Map.of();
         while (retry <= config.getRetries()) {
@@ -175,7 +176,7 @@ public class InternalClient {
             String endpoint,
             Map requestBody,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) {
         Map apiResponse = Map.of();
         if (httpMethod.equals(HttpVerbs.POST.name())) {
             apiResponse = internalPost(endpoint, requestBody, config);
@@ -193,7 +194,7 @@ public class InternalClient {
             String httpMethod,
             String endpoint,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) {
         Map apiResponse = Map.of();
         if (httpMethod.equals(HttpVerbs.GET.name())) {
             apiResponse = internalGet(endpoint, config);
@@ -208,7 +209,7 @@ public class InternalClient {
             String endpoint,
             List requestBody,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) {
         List apiResponse = List.of();
         if (httpMethod.equals(HttpVerbs.POST.name())) {
             apiResponse = internalPost(endpoint, requestBody, config);
@@ -220,7 +221,7 @@ public class InternalClient {
             String endpoint,
             List<HashMap<String, String>> body,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) throws InterruptedException {
         return requestLoop(
                 HttpVerbs.POST.name(),
                 endpoint,
@@ -233,7 +234,7 @@ public class InternalClient {
             String endpoint,
             Map body,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) throws InterruptedException {
         return requestLoop(
                 HttpVerbs.POST.name(),
                 endpoint,
@@ -246,7 +247,7 @@ public class InternalClient {
             String endpoint,
             Map body,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) throws InterruptedException {
         return requestLoop(
                 HttpVerbs.PUT.name(),
                 endpoint,
@@ -258,7 +259,7 @@ public class InternalClient {
     public Map get(
             String endpoint,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) throws InterruptedException {
         return requestLoop(
                 HttpVerbs.GET.name(),
                 endpoint,
@@ -269,7 +270,7 @@ public class InternalClient {
     public Map delete(
             String endpoint,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) throws InterruptedException {
         return requestLoop(
                 HttpVerbs.DELETE.name(),
                 endpoint,
@@ -280,7 +281,7 @@ public class InternalClient {
     private HttpRequest.Builder prepareRequest(
             String endpoint,
             Config config
-    ) throws URISyntaxException {
+    ) {
         Pattern pattern = Pattern.compile("/");
         String baseUri;
         if (endpoint.length() > 0) {
@@ -292,8 +293,16 @@ public class InternalClient {
             baseUri = config.getBaseUrl();
 
         }
+
+        URI clientUri = null;
+        try {
+            clientUri = new URI(baseUri);
+        } catch (URISyntaxException err) {
+            err.printStackTrace();
+        }
+
         return HttpRequest.newBuilder()
-                .uri(new URI(baseUri))
+                .uri(clientUri)
                 .headers("Content-Type", "application/json")
                 .headers("Accepts", "application/json")
                 .headers("Api-Key", config.getApiKey())
@@ -303,18 +312,26 @@ public class InternalClient {
 
     private String sendPreparedRequest(
             HttpRequest preparedRequest
-    ) throws IOException, InterruptedException {
-        return HttpClient
-                .newBuilder()
-                .build()
-                .send(preparedRequest, HttpResponse.BodyHandlers.ofString())
-                .body();
+    ) {
+        String responseBody = null;
+
+        try {
+            responseBody = HttpClient
+                    .newBuilder()
+                    .build()
+                    .send(preparedRequest, HttpResponse.BodyHandlers.ofString())
+                    .body();
+        } catch (IOException | InterruptedException err) {
+            err.printStackTrace();
+        }
+
+        return responseBody;
     }
 
     private Map internalDelete(
             String endpoint,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) {
         HttpRequest request = prepareRequest(endpoint, config)
                 .DELETE()
                 .build();
@@ -326,7 +343,7 @@ public class InternalClient {
     private Map internalGet(
             String endpoint,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) {
         HttpRequest request = prepareRequest(endpoint, config)
                 .GET()
                 .build();
@@ -339,7 +356,7 @@ public class InternalClient {
             String endpoint,
             List<HashMap<String , String>> requestBody,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) {
         String preppedRequest = gson.toJson(requestBody);
         HttpRequest request = prepareRequest(endpoint, config)
                 .POST(HttpRequest.BodyPublishers.ofString(preppedRequest))
@@ -353,7 +370,7 @@ public class InternalClient {
             String endpoint,
             Map requestBody,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) {
         HttpRequest request = prepareRequest(endpoint, config)
                 .POST(HttpRequest.BodyPublishers.ofString(hashMapToJson(requestBody)))
                 .build();
@@ -366,7 +383,7 @@ public class InternalClient {
             String endpoint,
             Map requestBody,
             Config config
-    ) throws URISyntaxException, IOException, InterruptedException {
+    ) {
         HttpRequest request = prepareRequest(endpoint, config)
                 .PUT(HttpRequest.BodyPublishers.ofString(hashMapToJson(requestBody)))
                 .build();

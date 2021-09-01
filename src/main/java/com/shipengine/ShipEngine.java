@@ -1,5 +1,7 @@
 package com.shipengine;
 
+import com.shipengine.exception.ShipEngineException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.Map;
 
 public class ShipEngine {
     private InternalClient client = new InternalClient();
+
     private Config config;
 
     public ShipEngine(String apiKey) {
@@ -31,16 +34,16 @@ public class ShipEngine {
      * @return The response from ShipEngine API including the validated and normalized address.
      */
     public List validateAddresses(List<HashMap<String, String>> address) {
-        Config mergedConfig = this.config.merge();
+        Config sdkConfig = this.getConfig();
         List<HashMap<String, String>> apiResponse = new ArrayList<>();
         try {
             apiResponse = client.post(
                     "/v1/addresses/validate",
                     address,
-                    mergedConfig
+                    sdkConfig
             );
             return apiResponse;
-        } catch (Exception e) {
+        } catch (ShipEngineException | InterruptedException e) {
             e.printStackTrace();
         }
         return apiResponse;
@@ -74,12 +77,12 @@ public class ShipEngine {
     }
 
     public Map listCarriers() {
-        Config mergedConfig = this.config.merge();
+        Config sdkConfig = this.getConfig();
         Map apiResponse = new HashMap<>();
         try {
             apiResponse = client.get(
                     "/v1/carriers",
-                    mergedConfig
+                    sdkConfig
             );
             return apiResponse;
         } catch (Exception e) {
@@ -124,16 +127,15 @@ public class ShipEngine {
      * See: https://shipengine.github.io/shipengine-openapi/#operation/void_label
      *
      * @param labelId The label_id of the label you wish to void.
-     * @return The response from ShipEngine API confirming the label was successfully voided or
-     * unable to be voided.
+     * @return The response from ShipEngine API confirming the label was successfully voided or unable to be voided.
      */
     public Map voidLabelWithLabelId(String labelId) {
-        Config mergedConfig = this.config.merge();
+        Config sdkConfig = this.getConfig();
         Map apiResponse = new HashMap<>();
         try {
             apiResponse = client.get(
                     String.format("/v1/labels/%s/void", labelId),
-                    mergedConfig
+                    sdkConfig
             );
             return apiResponse;
         } catch (Exception e) {
