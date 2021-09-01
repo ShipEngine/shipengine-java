@@ -1,9 +1,11 @@
 package com.shipengine;
 
 import com.shipengine.exception.ShipEngineException;
-import com.sun.jdi.event.StepEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ShipEngine {
     private InternalClient client = new InternalClient();
