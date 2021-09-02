@@ -204,7 +204,7 @@ public class InternalClient {
         return apiResponse;
     }
 
-    private List sendHttpRequest(
+    private List<HashMap<String, String>> sendHttpRequest(
             String httpMethod,
             String endpoint,
             List requestBody,
@@ -352,7 +352,7 @@ public class InternalClient {
         return apiResponseToMap(apiResponse);
     }
 
-    private List internalPost(
+    private List<HashMap<String, String>> internalPost(
             String endpoint,
             List<HashMap<String , String>> requestBody,
             Config config
@@ -408,8 +408,8 @@ public class InternalClient {
         return gson.fromJson(apiResponse, HashMap.class);
     }
 
-    private static List apiResponseToList(String apiResponse) {
-        List<HashMap> newList = new ArrayList<>();
+    private static List<HashMap<String, String>> apiResponseToList(String apiResponse) {
+        List<HashMap<String, String>> newList = new ArrayList<>();
         List apiResponseAsList = gson.fromJson(apiResponse, List.class);
         for (Object k : apiResponseAsList) {
             String temp = gson.toJson(k);

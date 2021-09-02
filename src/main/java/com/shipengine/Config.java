@@ -12,10 +12,19 @@ import java.util.regex.Pattern;
 
 public class Config {
     private String apiKey;
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
     private String baseUrl = Constants.BASE_URL;
     private int pageSize = 5000;
     private int retries = 1;
     private int timeout = 50;
+
+    public Config(Map<String, Object> config) {
+        this.merge(config);
+    }
 
     public Config(String apiKey) {
         setApiKey(apiKey);
@@ -23,6 +32,14 @@ public class Config {
 
     public Config(String apiKey, int timeout, int retries, int pageSize) {
         setApiKey(apiKey);
+        setTimeout(timeout);
+        setRetries(retries);
+        setPageSize(pageSize);
+    }
+
+    public Config(String apiKey, String baseUrl, int timeout, int retries, int pageSize) {
+        setApiKey(apiKey);
+        setBaseUrl(baseUrl);
         setTimeout(timeout);
         setRetries(retries);
         setPageSize(pageSize);

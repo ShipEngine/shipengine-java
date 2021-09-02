@@ -20,6 +20,16 @@ public class ShipEngine {
         this.config = new Config(apiKey, timeout, retries, pageSize);
     }
 
+    public ShipEngine(Map<String, Object> config) {
+        this.config = new Config(
+                config.get("apiKey").toString(),
+                config.get("baseUrl").toString(),
+                Integer.parseInt(config.get("timeout").toString()),
+                Integer.parseInt(config.get("retries").toString()),
+                Integer.parseInt(config.get("pageSize").toString())
+        );
+    }
+
     public Config getConfig() {
         return config;
     }
@@ -33,7 +43,7 @@ public class ShipEngine {
      * @param address A list of HashMaps where each HashMap contains the address data to be validated.
      * @return The response from ShipEngine API including the validated and normalized address.
      */
-    public List validateAddresses(List<HashMap<String, String>> address) {
+    public List<HashMap<String, String>> validateAddresses(List<HashMap<String, String>> address) {
         Config sdkConfig = this.getConfig();
         List<HashMap<String, String>> apiResponse = new ArrayList<>();
         try {
@@ -60,7 +70,7 @@ public class ShipEngine {
      *                global ShipEngineConfig object that will only affect the current request, not all requests.
      * @return The response from ShipEngine API including the validated and normalized address.
      */
-    public List validateAddresses(List<HashMap<String, String>> address, Map<String, Object> config) {
+    public List<HashMap<String, String>> validateAddresses(List<HashMap<String, String>> address, Map<String, Object> config) {
         Config mergedConfig = this.config.merge(config);
         List<HashMap<String, String>> apiResponse = new ArrayList<>();
         try {
