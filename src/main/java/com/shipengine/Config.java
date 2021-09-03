@@ -23,7 +23,27 @@ public class Config {
     private int timeout = 50;
 
     public Config(Map<String, Object> config) {
-        this.merge(config);
+        if (config.containsKey("apiKey")) {
+            setApiKey(config.get("apiKey").toString());
+        } else {
+            setApiKey("");
+        }
+
+        if (config.containsKey("baseUrl")) {
+            setBaseUrl(config.get("baseUrl").toString());
+        }
+
+        if (config.containsKey("timeout")) {
+            setTimeout(Integer.parseInt(config.get("timeout").toString()));
+        }
+
+        if (config.containsKey("retries")) {
+            setRetries(Integer.parseInt(config.get("retries").toString()));
+        }
+
+        if (config.containsKey("pageSize")) {
+            setPageSize(Integer.parseInt(config.get("pageSize").toString()));
+        }
     }
 
     public Config(String apiKey) {
@@ -149,25 +169,25 @@ public class Config {
             if (newConfig.containsKey(configKeys.get(0))) {
                 config.put(configKeys.get(0), newConfig.get(configKeys.get(0)));
             } else {
-                config.put(configKeys.get(0), this.getApiKey());
+                config.put(configKeys.get(0), getApiKey());
             }
 
             if (newConfig.containsKey(configKeys.get(1))) {
                 config.put(configKeys.get(1), newConfig.get(configKeys.get(1)));
             } else {
-                config.put(configKeys.get(1), this.getTimeout());
+                config.put(configKeys.get(1), getTimeout());
             }
 
             if (newConfig.containsKey(configKeys.get(2))) {
                 config.put(configKeys.get(2), newConfig.get(configKeys.get(2)));
             } else {
-                config.put(configKeys.get(2), this.getRetries());
+                config.put(configKeys.get(2), getRetries());
             }
 
             if (newConfig.containsKey(configKeys.get(3))) {
                 config.put(configKeys.get(3), newConfig.get(configKeys.get(3)));
             } else {
-                config.put(configKeys.get(3), this.pageSize);
+                config.put(configKeys.get(3), getPageSize());
             }
         }
         return new Config(

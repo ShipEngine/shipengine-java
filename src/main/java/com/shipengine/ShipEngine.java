@@ -21,13 +21,7 @@ public class ShipEngine {
     }
 
     public ShipEngine(Map<String, Object> config) {
-        this.config = new Config(
-                config.get("apiKey").toString(),
-                config.get("baseUrl").toString(),
-                Integer.parseInt(config.get("timeout").toString()),
-                Integer.parseInt(config.get("retries").toString()),
-                Integer.parseInt(config.get("pageSize").toString())
-        );
+        this.config = new Config(config);
     }
 
     public Config getConfig() {

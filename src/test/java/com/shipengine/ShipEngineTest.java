@@ -46,32 +46,62 @@ public class ShipEngineTest {
                         Times.exactly(1))
                 .respond(response()
                         .withStatusCode(200)
-                        .withBody("[{\"status\": \"success!!\"}]")
+                        .withBody("[\n" +
+                                "  {\n" +
+                                "    \"status\": \"verified\",\n" +
+                                "    \"original_address\": {\n" +
+                                "      \"name\": \"ShipEngine\",\n" +
+                                "      \"phone\": \"1-123-456-7891\",\n" +
+                                "      \"company_name\": null,\n" +
+                                "      \"address_line1\": \"3800 N Lamar Blvd\",\n" +
+                                "      \"address_line2\": \"ste 220\",\n" +
+                                "      \"address_line3\": null,\n" +
+                                "      \"city_locality\": \"Austin\",\n" +
+                                "      \"state_province\": \"TX\",\n" +
+                                "      \"postal_code\": \"78756\",\n" +
+                                "      \"country_code\": \"US\",\n" +
+                                "      \"address_residential_indicator\": \"unknown\"\n" +
+                                "    },\n" +
+                                "    \"matched_address\": {\n" +
+                                "      \"name\": \"SHIPENGINE\",\n" +
+                                "      \"phone\": \"1-123-456-7891\",\n" +
+                                "      \"company_name\": null,\n" +
+                                "      \"address_line1\": \"3800 N LAMAR BLVD STE 220\",\n" +
+                                "      \"address_line2\": \"\",\n" +
+                                "      \"address_line3\": null,\n" +
+                                "      \"city_locality\": \"AUSTIN\",\n" +
+                                "      \"state_province\": \"TX\",\n" +
+                                "      \"postal_code\": \"78756-0003\",\n" +
+                                "      \"country_code\": \"US\",\n" +
+                                "      \"address_residential_indicator\": \"no\"\n" +
+                                "    },\n" +
+                                "    \"messages\": []\n" +
+                                "  }\n" +
+                                "]")
                         .withDelay(TimeUnit.SECONDS, 1));
 
-        HashMap<String, String> stubAddress = new HashMap<>();
-        stubAddress.put("name", "ShipEngine");
-        stubAddress.put("company", "Auctane");
-        stubAddress.put("phone", "1-123-456-7891");
-        stubAddress.put("address_line1", "3800 N Lamar Blvd");
-        stubAddress.put("address_line2", "ste 220");
-        stubAddress.put("city_locality", "Austin");
-        stubAddress.put("state_province", "TX");
-        stubAddress.put("postal_code", "78756");
-        stubAddress.put("country_code", "US");
-        stubAddress.put("address_residential_indicator", "unknown");
+        HashMap<String, String> stubAddress = new HashMap<>() {{
+            put("name", "ShipEngine");
+            put("company", "Auctane");
+            put("phone", "1-123-456-7891");
+            put("address_line1", "3800 N Lamar Blvd");
+            put("address_line2", "ste 220");
+            put("city_locality", "Austin");
+            put("state_province", "TX");
+            put("postal_code", "78756");
+            put("country_code", "US");
+            put("address_residential_indicator", "unknown");
+        }};
 
-        HashMap<String, Object> customConfig = new HashMap<>(){{
+        HashMap<String, Object> customConfig = new HashMap<>() {{
             put("apiKey", Constants.API_KEY);
-            put("baseUrl", "http://localhost:1080/");
-            put("timeout", 10);
-            put("retries", 2);
-            put("pageSize", 55);
+            put("baseUrl", Constants.TEST_URL);
         }};
 
         List<HashMap<String, String>> unvalidatedAddress = List.of(stubAddress);
-        List validatedAddress = new ShipEngine(customConfig).validateAddresses(unvalidatedAddress);
-        assertEquals(HashMap.class, validatedAddress.get(0).getClass());
+        List<HashMap<String, String>> validatedAddress = new ShipEngine(customConfig).validateAddresses(unvalidatedAddress);
+        System.out.println("validatedAddress = " + validatedAddress);
+        assertEquals("verified", validatedAddress.get(0).get("status"));
     }
 
     /**
