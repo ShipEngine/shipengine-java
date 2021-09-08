@@ -3,7 +3,6 @@ package com.shipengine;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shipengine.exception.RateLimitExceededException;
-import com.shipengine.exception.ShipEngineException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -15,10 +14,10 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.List;
 
 public class InternalClient {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -43,14 +42,14 @@ public class InternalClient {
      * @param config     The global Config object for the ShipEngine SDK.
      * @return Map The response from ShipEngine API serialized into a Map/HashMap.
      */
-    private Map requestLoop(
+    private Map<String, String> requestLoop(
             String httpMethod,
             String endpoint,
             Map body,
             Config config
     ) throws InterruptedException {
         int retry = 0;
-        Map apiResponse = Map.of();
+        Map<String, String> apiResponse = Map.of();
         while (retry <= config.getRetries()) {
             try {
                 apiResponse = sendHttpRequest(
@@ -136,13 +135,13 @@ public class InternalClient {
      * @param config     The global Config object for the ShipEngine SDK.
      * @return Map The response from ShipEngine API serialized into a List/Array.
      */
-    private Map requestLoop(
+    private Map<String, String> requestLoop(
             String httpMethod,
             String endpoint,
             Config config
     ) throws InterruptedException {
         int retry = 0;
-        Map apiResponse = Map.of();
+        Map<String, String> apiResponse = Map.of();
         while (retry <= config.getRetries()) {
             try {
                 apiResponse = sendHttpRequest(
@@ -171,13 +170,13 @@ public class InternalClient {
         return apiResponse;
     }
 
-    private Map sendHttpRequest(
+    private Map<String, String> sendHttpRequest(
             String httpMethod,
             String endpoint,
             Map requestBody,
             Config config
     ) {
-        Map apiResponse = Map.of();
+        Map<String, String> apiResponse = Map.of();
         if (httpMethod.equals(HttpVerbs.POST.name())) {
             apiResponse = internalPost(endpoint, requestBody, config);
         } else if (httpMethod.equals(HttpVerbs.GET.name())) {
@@ -190,12 +189,12 @@ public class InternalClient {
         return apiResponse;
     }
 
-    private Map sendHttpRequest(
+    private Map<String, String> sendHttpRequest(
             String httpMethod,
             String endpoint,
             Config config
     ) {
-        Map apiResponse = Map.of();
+        Map<String, String> apiResponse = Map.of();
         if (httpMethod.equals(HttpVerbs.GET.name())) {
             apiResponse = internalGet(endpoint, config);
         } else if (httpMethod.equals(HttpVerbs.DELETE.name())) {
@@ -207,10 +206,10 @@ public class InternalClient {
     private List<HashMap<String, String>> sendHttpRequest(
             String httpMethod,
             String endpoint,
-            List requestBody,
+            List<HashMap<String, String>> requestBody,
             Config config
     ) {
-        List apiResponse = List.of();
+        List<HashMap<String, String>> apiResponse = List.of();
         if (httpMethod.equals(HttpVerbs.POST.name())) {
             apiResponse = internalPost(endpoint, requestBody, config);
         }
@@ -230,7 +229,7 @@ public class InternalClient {
         );
     }
 
-    public Map post(
+    public Map<String, String> post(
             String endpoint,
             Map body,
             Config config
@@ -243,7 +242,7 @@ public class InternalClient {
         );
     }
 
-    public Map put(
+    public Map<String, String> put(
             String endpoint,
             Map body,
             Config config
@@ -256,7 +255,7 @@ public class InternalClient {
         );
     }
 
-    public Map get(
+    public Map<String, String> get(
             String endpoint,
             Config config
     ) throws InterruptedException {
@@ -267,7 +266,7 @@ public class InternalClient {
         );
     }
 
-    public Map delete(
+    public Map<String, String> delete(
             String endpoint,
             Config config
     ) throws InterruptedException {
@@ -328,7 +327,7 @@ public class InternalClient {
         return responseBody;
     }
 
-    private Map internalDelete(
+    private Map<String, String> internalDelete(
             String endpoint,
             Config config
     ) {
@@ -340,7 +339,7 @@ public class InternalClient {
         return apiResponseToMap(apiResponse);
     }
 
-    private Map internalGet(
+    private Map<String, String> internalGet(
             String endpoint,
             Config config
     ) {
@@ -366,9 +365,9 @@ public class InternalClient {
         return apiResponseToList(apiResponse);
     }
 
-    private Map internalPost(
+    private Map<String, String> internalPost(
             String endpoint,
-            Map requestBody,
+            Map<String, String> requestBody,
             Config config
     ) {
         HttpRequest request = prepareRequest(endpoint, config)
@@ -379,7 +378,7 @@ public class InternalClient {
         return apiResponseToMap(apiResponse);
     }
 
-    private Map internalPut(
+    private Map<String, String> internalPut(
             String endpoint,
             Map requestBody,
             Config config
