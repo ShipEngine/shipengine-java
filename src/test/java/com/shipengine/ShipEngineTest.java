@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
+import org.mockserver.model.Header;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ public class ShipEngineTest {
     private final HashMap<String, Object> customConfig = new HashMap<>() {{
         put("apiKey", Constants.API_KEY);
         put("baseUrl", Constants.TEST_URL);
+        put("retries", 3);
     }};
 
     @Before

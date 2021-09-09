@@ -2,12 +2,31 @@ package com.shipengine.exception;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 
 /**
  * An error thrown by the ShipEngine SDK. All other SDK errors inherit from this
  * class.
  */
 public class ShipEngineException extends RuntimeException {
+    private static HashSet<String> getEnums() {
+        HashSet<String> values = new HashSet<>();
+
+        for (ErrorSource k : ErrorSource.values()) {
+            values.add(k.name());
+        }
+
+        for (ErrorType p : ErrorType.values()) {
+            values.add(p.name());
+        }
+
+        for (ErrorCode c : ErrorCode.values()) {
+            values.add(c.name());
+        }
+
+        return values;
+    }
+
     enum ErrorSource {
         CARRIER,
         ORDER_SOURCE,
@@ -161,5 +180,19 @@ public class ShipEngineException extends RuntimeException {
         this.setType(type);
         this.setCode(code);
         this.setUrl(url);
+    }
+
+    public ShipEngineException(
+            String message,
+            String requestID,
+            String source,
+            String type,
+            String code
+    ) {
+        super(message);
+        this.setRequestID(requestID);
+        this.setSource(ErrorSource.valueOf(source.toUpperCase()));
+        this.setType(ErrorType.valueOf(type.toUpperCase()));
+        this.setCode(ErrorCode.valueOf(code));
     }
 }

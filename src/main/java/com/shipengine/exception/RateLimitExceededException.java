@@ -19,12 +19,12 @@ public class RateLimitExceededException extends ShipEngineException {
     }
 
     public RateLimitExceededException(
-            String requestID, ErrorSource source, int retryAfter
+            String requestID, String source, int retryAfter
     ) {
         super(
                 "You have exceeded the rate limit.",
                 requestID,
-                source,
+                ErrorSource.valueOf(source.toUpperCase()),
                 ErrorType.SYSTEM,
                 ErrorCode.RATE_LIMIT_EXCEEDED,
                 "https://www.shipengine.com/docs/rate-limits"

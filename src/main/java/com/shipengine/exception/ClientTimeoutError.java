@@ -10,13 +10,13 @@ public class ClientTimeoutError extends ShipEngineException {
 
     public ClientTimeoutError(
             String requestID,
-            ErrorSource source,
+            String source,
             int retryAfter
     ) {
         super(
                 String.format("The request took longer than the %s seconds allowed.", retryAfter),
                 requestID,
-                source,
+                ErrorSource.valueOf(source.toUpperCase()),
                 ErrorType.SYSTEM,
                 ErrorCode.TIMEOUT,
                 "https://www.shipengine.com/docs/rate-limits"
