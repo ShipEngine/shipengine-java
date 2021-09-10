@@ -37,9 +37,10 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           architecture: x64
+          distribution: "adopt"
 
       - name: Lint the code
-        run: mvn checkstyle:checkstyle
+        run: mvn -X checkstyle:checkstyle
 
       - name: Run test suite
         run: mvn test
