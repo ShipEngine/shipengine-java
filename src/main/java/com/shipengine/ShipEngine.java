@@ -38,13 +38,12 @@ public class ShipEngine {
      * @return The response from ShipEngine API including the validated and normalized address.
      */
     public List<HashMap<String, String>> validateAddresses(List<HashMap<String, String>> address) {
-        Config sdkConfig = this.getConfig();
         List<HashMap<String, String>> apiResponse = new ArrayList<>();
         try {
             apiResponse = client.post(
                     "/v1/addresses/validate",
                     address,
-                    sdkConfig
+                    this.getConfig()
             );
             return apiResponse;
         } catch (ShipEngineException | InterruptedException e) {
@@ -81,12 +80,11 @@ public class ShipEngine {
     }
 
     public Map<String, String> listCarriers() {
-        Config sdkConfig = this.getConfig();
         Map<String, String> apiResponse = new HashMap<>();
         try {
             apiResponse = client.get(
                     "/v1/carriers",
-                    sdkConfig
+                    this.getConfig()
             );
             return apiResponse;
         } catch (ShipEngineException | InterruptedException e) {
@@ -111,13 +109,12 @@ public class ShipEngine {
     }
 
     public Map<String, String> createLabelFromShipmentDetails(Map<String, Object> shipment) {
-        Config sdkConfig = this.getConfig();
         Map<String, String> apiResponse = new HashMap<>();
         try {
             apiResponse = client.post(
                     "/v1/labels",
                     shipment,
-                    sdkConfig
+                    this.getConfig()
             );
             return apiResponse;
         } catch (ShipEngineException | InterruptedException e) {
@@ -143,13 +140,12 @@ public class ShipEngine {
     }
 
     public Map<String, String> createLabelFromRateId(String rateId, Map<String, Object> params) {
-        Config sdkConfig = this.getConfig();
         Map<String, String> apiResponse = new HashMap<>();
         try {
             apiResponse = client.post(
                     String.format("/v1/labels/rates/%s", rateId),
                     params,
-                    sdkConfig
+                    this.getConfig()
             );
             return apiResponse;
         } catch (ShipEngineException | InterruptedException e) {
@@ -179,13 +175,12 @@ public class ShipEngine {
     }
 
     public Map<String, String> getRatesWithShipmentDetails(Map<String, Object> shipment) {
-        Config sdkConfig = this.getConfig();
         Map<String, String> apiResponse = new HashMap<>();
         try {
             apiResponse = client.post(
                     "/v1/rates",
                     shipment,
-                    sdkConfig
+                    this.getConfig()
             );
             return apiResponse;
         } catch (ShipEngineException | InterruptedException e) {
@@ -213,7 +208,6 @@ public class ShipEngine {
     public Map<String, String> trackUsingCarrierCodeAndTrackingNumber(
             Map<String, Object> trackingData
     ) {
-        Config sdkConfig = this.getConfig();
         Map<String, String> apiResponse = new HashMap<>();
         try {
             apiResponse = client.get(
@@ -222,7 +216,7 @@ public class ShipEngine {
                             trackingData.get("carrierCode"),
                             trackingData.get("trackingNumber")
                     ),
-                    sdkConfig
+                    this.getConfig()
             );
             return apiResponse;
         } catch (ShipEngineException | InterruptedException e) {
@@ -254,7 +248,6 @@ public class ShipEngine {
     }
 
     public Map<String, String> trackUsingLabelId(String labelId) {
-        Config sdkConfig = this.getConfig();
         Map<String, String> apiResponse = new HashMap<>();
         try {
             apiResponse = client.get(
@@ -262,7 +255,7 @@ public class ShipEngine {
                             "/v1/labels/%s/track",
                             labelId
                     ),
-                    sdkConfig
+                    this.getConfig()
             );
             return apiResponse;
         } catch (ShipEngineException | InterruptedException e) {
@@ -297,12 +290,11 @@ public class ShipEngine {
      * @return The response from ShipEngine API confirming the label was successfully voided or unable to be voided.
      */
     public Map<String, String> voidLabelWithLabelId(String labelId) {
-        Config sdkConfig = this.getConfig();
         Map<String, String> apiResponse = new HashMap<>();
         try {
             apiResponse = client.get(
                     String.format("/v1/labels/%s/void", labelId),
-                    sdkConfig
+                    this.getConfig()
             );
             return apiResponse;
         } catch (ShipEngineException | InterruptedException e) {

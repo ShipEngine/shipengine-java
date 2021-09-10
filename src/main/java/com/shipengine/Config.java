@@ -1,6 +1,7 @@
 package com.shipengine;
 
 import com.shipengine.exception.InvalidFieldValueException;
+import com.shipengine.exception.ValidationException;
 import com.shipengine.util.Constants;
 
 import java.util.Arrays;
@@ -111,6 +112,14 @@ public class Config {
      * Set the timeout (in milliseconds).
      */
     public void setTimeout(int timeout) {
+        if (timeout == 0) {
+            throw new ValidationException(
+                    "The timeout value cannot be zero.",
+                    "shipengine",
+                    "validation",
+                    "invalid_field_value"
+            );
+        }
         this.timeout = timeout;
     }
 
@@ -130,6 +139,14 @@ public class Config {
      * Set the retries.
      */
     public void setRetries(int retries) {
+        if (retries == 0) {
+            throw new ValidationException(
+                    "The retries value cannot be zero.",
+                    "shipengine",
+                    "validation",
+                    "invalid_field_value"
+            );
+        }
         this.retries = retries;
     }
 
@@ -148,6 +165,14 @@ public class Config {
      * Set the page size.
      */
     public void setPageSize(int pageSize) {
+        if (pageSize == 0) {
+            throw new ValidationException(
+                    "The pageSize value cannot be zero.",
+                    "shipengine",
+                    "validation",
+                    "invalid_field_value"
+            );
+        }
         this.pageSize = pageSize;
     }
 
@@ -192,9 +217,9 @@ public class Config {
         }
         return new Config(
                 config.get(configKeys.get(0)).toString(),
-                java.lang.Integer.parseInt(config.get(configKeys.get(1)).toString()),
-                java.lang.Integer.parseInt(config.get(configKeys.get(2)).toString()),
-                java.lang.Integer.parseInt(config.get(configKeys.get(3)).toString())
+                Integer.parseInt(config.get(configKeys.get(1)).toString()),
+                Integer.parseInt(config.get(configKeys.get(2)).toString()),
+                Integer.parseInt(config.get(configKeys.get(3)).toString())
         );
     }
 }

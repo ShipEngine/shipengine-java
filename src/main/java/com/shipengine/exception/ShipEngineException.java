@@ -9,7 +9,7 @@ import java.util.HashSet;
  * class.
  */
 public class ShipEngineException extends RuntimeException {
-    private static HashSet<String> getEnums() {
+    public static HashSet<String> getEnums() {
         HashSet<String> values = new HashSet<>();
 
         for (ErrorSource k : ErrorSource.values()) {
@@ -116,55 +116,55 @@ public class ShipEngineException extends RuntimeException {
      */
     private ErrorCode code;
 
-    private String getRequestID() {
+    /**
+     * Some errors include a URL that you can visit to learn more about the error,
+     * find out how to resolve it, or get support.
+     */
+    private URL url;
+
+    public String getRequestID() {
         return requestID;
     }
 
-    private ErrorSource getSource() {
+    public ErrorSource getSource() {
         return source;
     }
 
-    private ErrorType getType() {
+    public ErrorType getType() {
         return type;
     }
 
-    private ErrorCode getCode() {
+    public ErrorCode getCode() {
         return code;
     }
 
-    private URL getUrl() {
+    public URL getUrl() {
         return url;
     }
 
-    private void setRequestID(String requestID) {
+    public void setRequestID(String requestID) {
         this.requestID = requestID;
     }
 
-    private void setSource(ErrorSource source) {
+    public void setSource(ErrorSource source) {
         this.source = source;
     }
 
-    private void setType(ErrorType type) {
+    public void setType(ErrorType type) {
         this.type = type;
     }
 
-    private void setCode(ErrorCode code) {
+    public void setCode(ErrorCode code) {
         this.code = code;
     }
 
-    private void setUrl(String url) {
+    public void setUrl(String url) {
         try {
             this.url = new URL(url);
         } catch (MalformedURLException err) {
             err.printStackTrace();
         }
     }
-
-    /**
-     * Some errors include a URL that you can visit to learn more about the error,
-     * find out how to resolve it, or get support.
-     */
-    URL url;
 
     public ShipEngineException(
             String message,
@@ -184,6 +184,20 @@ public class ShipEngineException extends RuntimeException {
 
     public ShipEngineException(
             String message,
+            ErrorSource source,
+            ErrorType type,
+            ErrorCode code,
+            String url
+    ) {
+        super(message);
+        this.setSource(source);
+        this.setType(type);
+        this.setCode(code);
+        this.setUrl(url);
+    }
+
+    public ShipEngineException(
+            String message,
             String requestID,
             String source,
             String type,
@@ -191,6 +205,18 @@ public class ShipEngineException extends RuntimeException {
     ) {
         super(message);
         this.setRequestID(requestID);
+        this.setSource(ErrorSource.valueOf(source.toUpperCase()));
+        this.setType(ErrorType.valueOf(type.toUpperCase()));
+        this.setCode(ErrorCode.valueOf(code));
+    }
+
+    public ShipEngineException(
+            String message,
+            String source,
+            String type,
+            String code
+    ) {
+        super(message);
         this.setSource(ErrorSource.valueOf(source.toUpperCase()));
         this.setType(ErrorType.valueOf(type.toUpperCase()));
         this.setCode(ErrorCode.valueOf(code));

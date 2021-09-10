@@ -7,12 +7,12 @@ public class InvalidFieldValueException extends ShipEngineException {
     /**
      * The name of the invalid field.
      */
-    String fieldName;
+    private String fieldName;
 
     /**
      * The value of the invalid field.
      */
-    String fieldValue;
+    private String fieldValue;
 
     public String getFieldName() {
         return fieldName;
