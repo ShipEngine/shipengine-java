@@ -8,7 +8,15 @@ public class FieldValueRequiredException extends RuntimeException {
     /**
      * The name of the invalid field.
      */
-    String fieldName;
+    private String fieldName;
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
 
     public FieldValueRequiredException(
             String fieldName

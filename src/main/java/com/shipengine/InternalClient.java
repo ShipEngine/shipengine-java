@@ -2,6 +2,7 @@ package com.shipengine;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.shipengine.exception.ClientTimeoutError;
 import com.shipengine.exception.RateLimitExceededException;
 import com.shipengine.exception.ShipEngineException;
 
@@ -15,10 +16,10 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.List;
 
 public class InternalClient {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -43,14 +44,14 @@ public class InternalClient {
      * @param config     The global Config object for the ShipEngine SDK.
      * @return Map The response from ShipEngine API serialized into a Map/HashMap.
      */
-    private Map requestLoop(
+    private Map<String, String> requestLoop(
             String httpMethod,
             String endpoint,
             Map body,
             Config config
     ) throws InterruptedException {
         int retry = 0;
-        Map apiResponse = Map.of();
+        Map<String, String> apiResponse = Map.of();
         while (retry <= config.getRetries()) {
             try {
                 apiResponse = sendHttpRequest(
@@ -73,9 +74,8 @@ public class InternalClient {
                 } else {
                     throw err;
                 }
-                // return apiResponse;
             }
-            return apiResponse;
+            retry++;
         }
         return apiResponse;
     }
@@ -93,7 +93,7 @@ public class InternalClient {
     private List<HashMap<String, String>> requestLoop(
             String httpMethod,
             String endpoint,
-            List<HashMap<String ,String>> body,
+            List<HashMap<String, String>> body,
             Config config
     ) throws InterruptedException {
         int retry = 0;
@@ -120,9 +120,8 @@ public class InternalClient {
                 } else {
                     throw err;
                 }
-                // return apiResponse;
             }
-            return apiResponse;
+            retry++;
         }
         return apiResponse;
     }
@@ -136,13 +135,13 @@ public class InternalClient {
      * @param config     The global Config object for the ShipEngine SDK.
      * @return Map The response from ShipEngine API serialized into a List/Array.
      */
-    private Map requestLoop(
+    private Map<String, String> requestLoop(
             String httpMethod,
             String endpoint,
             Config config
     ) throws InterruptedException {
         int retry = 0;
-        Map apiResponse = Map.of();
+        Map<String, String> apiResponse = Map.of();
         while (retry <= config.getRetries()) {
             try {
                 apiResponse = sendHttpRequest(
@@ -164,20 +163,19 @@ public class InternalClient {
                 } else {
                     throw err;
                 }
-                // return apiResponse;
             }
-            return apiResponse;
+            retry++;
         }
         return apiResponse;
     }
 
-    private Map sendHttpRequest(
+    private Map<String, String> sendHttpRequest(
             String httpMethod,
             String endpoint,
             Map requestBody,
             Config config
     ) {
-        Map apiResponse = Map.of();
+        Map<String, String> apiResponse = Map.of();
         if (httpMethod.equals(HttpVerbs.POST.name())) {
             apiResponse = internalPost(endpoint, requestBody, config);
         } else if (httpMethod.equals(HttpVerbs.GET.name())) {
@@ -190,12 +188,12 @@ public class InternalClient {
         return apiResponse;
     }
 
-    private Map sendHttpRequest(
+    private Map<String, String> sendHttpRequest(
             String httpMethod,
             String endpoint,
             Config config
     ) {
-        Map apiResponse = Map.of();
+        Map<String, String> apiResponse = Map.of();
         if (httpMethod.equals(HttpVerbs.GET.name())) {
             apiResponse = internalGet(endpoint, config);
         } else if (httpMethod.equals(HttpVerbs.DELETE.name())) {
@@ -204,13 +202,13 @@ public class InternalClient {
         return apiResponse;
     }
 
-    private List sendHttpRequest(
+    private List<HashMap<String, String>> sendHttpRequest(
             String httpMethod,
             String endpoint,
-            List requestBody,
+            List<HashMap<String, String>> requestBody,
             Config config
     ) {
-        List apiResponse = List.of();
+        List<HashMap<String, String>> apiResponse = List.of();
         if (httpMethod.equals(HttpVerbs.POST.name())) {
             apiResponse = internalPost(endpoint, requestBody, config);
         }
@@ -230,7 +228,7 @@ public class InternalClient {
         );
     }
 
-    public Map post(
+    public Map<String, String> post(
             String endpoint,
             Map body,
             Config config
@@ -243,7 +241,7 @@ public class InternalClient {
         );
     }
 
-    public Map put(
+    public Map<String, String> put(
             String endpoint,
             Map body,
             Config config
@@ -256,7 +254,7 @@ public class InternalClient {
         );
     }
 
-    public Map get(
+    public Map<String, String> get(
             String endpoint,
             Config config
     ) throws InterruptedException {
@@ -267,7 +265,7 @@ public class InternalClient {
         );
     }
 
-    public Map delete(
+    public Map<String, String> delete(
             String endpoint,
             Config config
     ) throws InterruptedException {
@@ -311,16 +309,27 @@ public class InternalClient {
     }
 
     private String sendPreparedRequest(
-            HttpRequest preparedRequest
+            HttpRequest preparedRequest,
+            Config config
     ) {
         String responseBody = null;
 
         try {
-            responseBody = HttpClient
+            HttpResponse<String> response = HttpClient
                     .newBuilder()
                     .build()
-                    .send(preparedRequest, HttpResponse.BodyHandlers.ofString())
-                    .body();
+                    .send(preparedRequest, HttpResponse.BodyHandlers.ofString());
+            responseBody = response.body();
+            String retryAfterHeaderValue = response.headers().firstValue("retry-after").toString();
+
+            checkResponseForErrors(
+                    response.statusCode(),
+                    responseBody,
+                    retryAfterHeaderValue,
+                    config
+            );
+
+            String debugg = "Check above values in debug console!";
         } catch (IOException | InterruptedException err) {
             err.printStackTrace();
         }
@@ -328,7 +337,7 @@ public class InternalClient {
         return responseBody;
     }
 
-    private Map internalDelete(
+    private Map<String, String> internalDelete(
             String endpoint,
             Config config
     ) {
@@ -336,11 +345,11 @@ public class InternalClient {
                 .DELETE()
                 .build();
 
-        String apiResponse = sendPreparedRequest(request);
+        String apiResponse = sendPreparedRequest(request, config);
         return apiResponseToMap(apiResponse);
     }
 
-    private Map internalGet(
+    private Map<String, String> internalGet(
             String endpoint,
             Config config
     ) {
@@ -348,13 +357,13 @@ public class InternalClient {
                 .GET()
                 .build();
 
-        String apiResponse = sendPreparedRequest(request);
+        String apiResponse = sendPreparedRequest(request, config);
         return apiResponseToMap(apiResponse);
     }
 
-    private List internalPost(
+    private List<HashMap<String, String>> internalPost(
             String endpoint,
-            List<HashMap<String , String>> requestBody,
+            List<HashMap<String, String>> requestBody,
             Config config
     ) {
         String preppedRequest = gson.toJson(requestBody);
@@ -362,24 +371,24 @@ public class InternalClient {
                 .POST(HttpRequest.BodyPublishers.ofString(preppedRequest))
                 .build();
 
-        String apiResponse = sendPreparedRequest(request);
+        String apiResponse = sendPreparedRequest(request, config);
         return apiResponseToList(apiResponse);
     }
 
-    private Map internalPost(
+    private Map<String, String> internalPost(
             String endpoint,
-            Map requestBody,
+            Map<String, String> requestBody,
             Config config
     ) {
         HttpRequest request = prepareRequest(endpoint, config)
                 .POST(HttpRequest.BodyPublishers.ofString(hashMapToJson(requestBody)))
                 .build();
 
-        String apiResponse = sendPreparedRequest(request);
+        String apiResponse = sendPreparedRequest(request, config);
         return apiResponseToMap(apiResponse);
     }
 
-    private Map internalPut(
+    private Map<String, String> internalPut(
             String endpoint,
             Map requestBody,
             Config config
@@ -388,7 +397,7 @@ public class InternalClient {
                 .PUT(HttpRequest.BodyPublishers.ofString(hashMapToJson(requestBody)))
                 .build();
 
-        String apiResponse = sendPreparedRequest(request);
+        String apiResponse = sendPreparedRequest(request, config);
         return apiResponseToMap(apiResponse);
     }
 
@@ -408,13 +417,59 @@ public class InternalClient {
         return gson.fromJson(apiResponse, HashMap.class);
     }
 
-    private static List apiResponseToList(String apiResponse) {
-        List<HashMap> newList = new ArrayList<>();
+    private static List<HashMap<String, String>> apiResponseToList(String apiResponse) {
+        List<HashMap<String, String>> newList = new ArrayList<>();
         List apiResponseAsList = gson.fromJson(apiResponse, List.class);
         for (Object k : apiResponseAsList) {
             String temp = gson.toJson(k);
             newList.add(gson.fromJson(temp, HashMap.class));
         }
         return newList;
+    }
+
+    private void checkResponseForErrors(
+            int statusCode,
+            String httpResponseBody,
+            String retryAfterHeader,
+            Config config
+    ) {
+        Map<String, ArrayList<Map<String, String>>> responseBody = apiResponseToMap(httpResponseBody);
+        Map<String, String> error = responseBody.get("errors").get(0);
+        switch (statusCode) {
+            case 400:
+            case 500:
+                throw new ShipEngineException(
+                        error.get("message"),
+                        responseBody.get("request_id").toString(),
+                        error.get("error_source"),
+                        error.get("error_type"),
+                        error.get("error_code")
+                );
+            case 404:
+                throw new ShipEngineException(
+                        error.get("message"),
+                        responseBody.get("request_id").toString(),
+                        "shipengine",
+                        error.get("error_type"),
+                        error.get("error_code")
+                );
+            case 429:
+                int retry = Integer.parseInt(retryAfterHeader);
+                if (retry > config.getTimeout()) {
+                    throw new ClientTimeoutError(
+                            responseBody.get("request_id").toString(),
+                            "shipengine",
+                            retry
+                    );
+                } else {
+                    throw new RateLimitExceededException(
+                            responseBody.get("request_id").toString(),
+                            "shipengine",
+                            retry
+                    );
+                }
+            default:
+                return;
+        }
     }
 }

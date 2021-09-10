@@ -20,6 +20,10 @@ public class ShipEngine {
         this.config = new Config(apiKey, timeout, retries, pageSize);
     }
 
+    public ShipEngine(Map<String, Object> config) {
+        this.config = new Config(config);
+    }
+
     public Config getConfig() {
         return config;
     }
@@ -33,14 +37,13 @@ public class ShipEngine {
      * @param address A list of HashMaps where each HashMap contains the address data to be validated.
      * @return The response from ShipEngine API including the validated and normalized address.
      */
-    public List validateAddresses(List<HashMap<String, String>> address) {
-        Config sdkConfig = this.getConfig();
+    public List<HashMap<String, String>> validateAddresses(List<HashMap<String, String>> address) {
         List<HashMap<String, String>> apiResponse = new ArrayList<>();
         try {
             apiResponse = client.post(
                     "/v1/addresses/validate",
                     address,
-                    sdkConfig
+                    this.getConfig()
             );
             return apiResponse;
         } catch (ShipEngineException | InterruptedException e) {
@@ -60,7 +63,7 @@ public class ShipEngine {
      *                global ShipEngineConfig object that will only affect the current request, not all requests.
      * @return The response from ShipEngine API including the validated and normalized address.
      */
-    public List validateAddresses(List<HashMap<String, String>> address, Map<String, Object> config) {
+    public List<HashMap<String, String>> validateAddresses(List<HashMap<String, String>> address, Map<String, Object> config) {
         Config mergedConfig = this.config.merge(config);
         List<HashMap<String, String>> apiResponse = new ArrayList<>();
         try {
@@ -70,28 +73,27 @@ public class ShipEngine {
                     mergedConfig
             );
             return apiResponse;
-        } catch (Exception e) {
+        } catch (ShipEngineException | InterruptedException e) {
             e.printStackTrace();
         }
         return apiResponse;
     }
 
-    public Map listCarriers() {
-        Config sdkConfig = this.getConfig();
-        Map apiResponse = new HashMap<>();
+    public Map<String, String> listCarriers() {
+        Map<String, String> apiResponse = new HashMap<>();
         try {
             apiResponse = client.get(
                     "/v1/carriers",
-                    sdkConfig
+                    this.getConfig()
             );
             return apiResponse;
-        } catch (Exception e) {
+        } catch (ShipEngineException | InterruptedException e) {
             e.printStackTrace();
         }
         return apiResponse;
     }
 
-    public Map listCarriers(Map<String, Object> config) {
+    public Map<String, String> listCarriers(Map<String, Object> config) {
         Config mergedConfig = this.config.merge(config);
         Map apiResponse = new HashMap<>();
         try {
@@ -100,26 +102,184 @@ public class ShipEngine {
                     mergedConfig
             );
             return apiResponse;
-        } catch (Exception e) {
+        } catch (ShipEngineException | InterruptedException e) {
             e.printStackTrace();
         }
         return apiResponse;
     }
 
-    public String trackUsingCarrierCodeAndTrackingNumber() {
-        return config.getBaseUrl();
+    public Map<String, String> createLabelFromShipmentDetails(Map<String, Object> shipment) {
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.post(
+                    "/v1/labels",
+                    shipment,
+                    this.getConfig()
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
     }
 
-    public String trackUsingLabelId() {
-        return config.getBaseUrl();
+    public Map<String, String> createLabelFromShipmentDetails(Map<String, Object> shipment, Map<String, Object> config) {
+        Config mergedConfig = this.config.merge(config);
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.post(
+                    "/v1/labels",
+                    shipment,
+                    mergedConfig
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
     }
 
-    public String createLabelFromShipmentDetails() {
-        return config.getBaseUrl();
+    public Map<String, String> createLabelFromRateId(String rateId, Map<String, Object> params) {
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.post(
+                    String.format("/v1/labels/rates/%s", rateId),
+                    params,
+                    this.getConfig()
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
     }
 
-    public String createLabelFromRate() {
-        return config.getBaseUrl();
+    public Map<String, String> createLabelFromRateId(
+            String rateId,
+            Map<String, Object> params,
+            Map<String, Object> config
+    ) {
+        Config mergedConfig = this.config.merge(config);
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.post(
+                    String.format("/v1/labels/rates/%s", rateId),
+                    params,
+                    mergedConfig
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
+    }
+
+    public Map<String, String> getRatesWithShipmentDetails(Map<String, Object> shipment) {
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.post(
+                    "/v1/rates",
+                    shipment,
+                    this.getConfig()
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
+    }
+
+    public Map<String, String> getRatesWithShipmentDetails(Map<String, Object> shipment, Map<String, Object> config) {
+        Config mergedConfig = this.config.merge(config);
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.post(
+                    "/v1/rates",
+                    shipment,
+                    mergedConfig
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
+    }
+
+    public Map<String, String> trackUsingCarrierCodeAndTrackingNumber(
+            Map<String, Object> trackingData
+    ) {
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.get(
+                    String.format(
+                            "/v1/tracking?carrier_code=%s&tracking_number=%s",
+                            trackingData.get("carrierCode"),
+                            trackingData.get("trackingNumber")
+                    ),
+                    this.getConfig()
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
+    }
+
+    public Map<String, String> trackUsingCarrierCodeAndTrackingNumber(
+            Map<String, Object> trackingData,
+            Map<String, Object> config
+    ) {
+        Config mergedConfig = this.config.merge(config);
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.get(
+                    String.format(
+                            "/v1/tracking?carrier_code=%s&tracking_number=%s",
+                            trackingData.get("carrierCode"),
+                            trackingData.get("trackingNumber")
+                    ),
+                    mergedConfig
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
+    }
+
+    public Map<String, String> trackUsingLabelId(String labelId) {
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.get(
+                    String.format(
+                            "/v1/labels/%s/track",
+                            labelId
+                    ),
+                    this.getConfig()
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
+    }
+
+    public Map<String, String> trackUsingLabelId(String labelId, Map<String, Object> config) {
+        Config mergedConfig = this.config.merge(config);
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.get(
+                    String.format(
+                            "/v1/labels/%s/track",
+                            labelId
+                    ),
+                    mergedConfig
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
     }
 
     /**
@@ -129,16 +289,15 @@ public class ShipEngine {
      * @param labelId The label_id of the label you wish to void.
      * @return The response from ShipEngine API confirming the label was successfully voided or unable to be voided.
      */
-    public Map voidLabelWithLabelId(String labelId) {
-        Config sdkConfig = this.getConfig();
-        Map apiResponse = new HashMap<>();
+    public Map<String, String> voidLabelWithLabelId(String labelId) {
+        Map<String, String> apiResponse = new HashMap<>();
         try {
             apiResponse = client.get(
                     String.format("/v1/labels/%s/void", labelId),
-                    sdkConfig
+                    this.getConfig()
             );
             return apiResponse;
-        } catch (Exception e) {
+        } catch (ShipEngineException | InterruptedException e) {
             e.printStackTrace();
         }
         return apiResponse;
@@ -153,22 +312,18 @@ public class ShipEngine {
      *                global ShipEngineConfig object that will only affect the current request, not all requests.
      * @return The response from ShipEngine API confirming the label was successfully voided or unable to be voided.
      */
-    public Map voidLabelWithLabelId(String labelId, Map<String, Object> config) {
+    public Map<String, String> voidLabelWithLabelId(String labelId, Map<String, Object> config) {
         Config mergedConfig = this.config.merge(config);
-        Map apiResponse = new HashMap<>();
+        Map<String, String> apiResponse = new HashMap<>();
         try {
             apiResponse = client.get(
                     String.format("/v1/labels/%s/void", labelId),
                     mergedConfig
             );
             return apiResponse;
-        } catch (Exception e) {
+        } catch (ShipEngineException | InterruptedException e) {
             e.printStackTrace();
         }
         return apiResponse;
-    }
-
-    public String getRatesWithShipmentDetails() {
-        return config.getBaseUrl();
     }
 }

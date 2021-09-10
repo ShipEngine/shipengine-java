@@ -1,6 +1,7 @@
 package com.shipengine;
 
 import com.shipengine.exception.InvalidFieldValueException;
+import com.shipengine.exception.ValidationException;
 import com.shipengine.util.Constants;
 
 import java.util.Arrays;
@@ -12,10 +13,39 @@ import java.util.regex.Pattern;
 
 public class Config {
     private String apiKey;
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
     private String baseUrl = Constants.BASE_URL;
     private int pageSize = 5000;
     private int retries = 1;
     private int timeout = 50;
+
+    public Config(Map<String, Object> config) {
+        if (config.containsKey("apiKey")) {
+            setApiKey(config.get("apiKey").toString());
+        } else {
+            setApiKey("");
+        }
+
+        if (config.containsKey("baseUrl")) {
+            setBaseUrl(config.get("baseUrl").toString());
+        }
+
+        if (config.containsKey("timeout")) {
+            setTimeout(Integer.parseInt(config.get("timeout").toString()));
+        }
+
+        if (config.containsKey("retries")) {
+            setRetries(Integer.parseInt(config.get("retries").toString()));
+        }
+
+        if (config.containsKey("pageSize")) {
+            setPageSize(Integer.parseInt(config.get("pageSize").toString()));
+        }
+    }
 
     public Config(String apiKey) {
         setApiKey(apiKey);
@@ -23,6 +53,14 @@ public class Config {
 
     public Config(String apiKey, int timeout, int retries, int pageSize) {
         setApiKey(apiKey);
+        setTimeout(timeout);
+        setRetries(retries);
+        setPageSize(pageSize);
+    }
+
+    public Config(String apiKey, String baseUrl, int timeout, int retries, int pageSize) {
+        setApiKey(apiKey);
+        setBaseUrl(baseUrl);
         setTimeout(timeout);
         setRetries(retries);
         setPageSize(pageSize);
@@ -74,6 +112,14 @@ public class Config {
      * Set the timeout (in milliseconds).
      */
     public void setTimeout(int timeout) {
+        if (timeout == 0) {
+            throw new ValidationException(
+                    "The timeout value cannot be zero.",
+                    "shipengine",
+                    "validation",
+                    "invalid_field_value"
+            );
+        }
         this.timeout = timeout;
     }
 
@@ -93,6 +139,14 @@ public class Config {
      * Set the retries.
      */
     public void setRetries(int retries) {
+        if (retries == 0) {
+            throw new ValidationException(
+                    "The retries value cannot be zero.",
+                    "shipengine",
+                    "validation",
+                    "invalid_field_value"
+            );
+        }
         this.retries = retries;
     }
 
@@ -111,6 +165,14 @@ public class Config {
      * Set the page size.
      */
     public void setPageSize(int pageSize) {
+        if (pageSize == 0) {
+            throw new ValidationException(
+                    "The pageSize value cannot be zero.",
+                    "shipengine",
+                    "validation",
+                    "invalid_field_value"
+            );
+        }
         this.pageSize = pageSize;
     }
 
@@ -132,32 +194,32 @@ public class Config {
             if (newConfig.containsKey(configKeys.get(0))) {
                 config.put(configKeys.get(0), newConfig.get(configKeys.get(0)));
             } else {
-                config.put(configKeys.get(0), this.getApiKey());
+                config.put(configKeys.get(0), getApiKey());
             }
 
             if (newConfig.containsKey(configKeys.get(1))) {
                 config.put(configKeys.get(1), newConfig.get(configKeys.get(1)));
             } else {
-                config.put(configKeys.get(1), this.getTimeout());
+                config.put(configKeys.get(1), getTimeout());
             }
 
             if (newConfig.containsKey(configKeys.get(2))) {
                 config.put(configKeys.get(2), newConfig.get(configKeys.get(2)));
             } else {
-                config.put(configKeys.get(2), this.getRetries());
+                config.put(configKeys.get(2), getRetries());
             }
 
             if (newConfig.containsKey(configKeys.get(3))) {
                 config.put(configKeys.get(3), newConfig.get(configKeys.get(3)));
             } else {
-                config.put(configKeys.get(3), this.pageSize);
+                config.put(configKeys.get(3), getPageSize());
             }
         }
         return new Config(
                 config.get(configKeys.get(0)).toString(),
-                java.lang.Integer.parseInt(config.get(configKeys.get(1)).toString()),
-                java.lang.Integer.parseInt(config.get(configKeys.get(2)).toString()),
-                java.lang.Integer.parseInt(config.get(configKeys.get(3)).toString())
+                Integer.parseInt(config.get(configKeys.get(1)).toString()),
+                Integer.parseInt(config.get(configKeys.get(2)).toString()),
+                Integer.parseInt(config.get(configKeys.get(3)).toString())
         );
     }
 }
