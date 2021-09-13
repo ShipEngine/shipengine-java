@@ -8,11 +8,38 @@ ShipEngine Java SDK
 
 Quick Start
 --------------------------
-TODO
+Install `shipengine` via `<INSERT_PACKAGE_MANAGER_HERE>`:
+```bash
+INSTALL GOES COMMAND HERE
+```
+
+- The only configuration requirement is providing an [API Key](https://www.shipengine.com/docs/auth/#api-keys "ShipEngine Authentication Docs").
+
+Instantiate ShipEngine Class
+----------------------------
+
+```java
+import com.shipengine;
+
+ShipEngine shipengine = new ShipEngine("<YOUR_API_KEY_HERE>");
+```
+
+- You can also pass in a `HashMap/Map` containing configuration options instead of just passing in a string that is your `API Key`.
+
+```java
+import com.shipengine;
+
+ShipEngine shipengine = new ShipEngine(new HashMap<>() {{
+        put("apiKey", API_KEY);
+        put("pageSize", 75);
+        put("retries", 3);
+        put("timeout", 8000)
+        }});
+```
 
 Methods
--------------------------------
-* [`createLabelFromRate`](./docs/create-label-from-rate.md) - When retrieving rates for shipments using the `getRatesWithShipmentDetails` method, the returned information contains a `rateId` property that can be used to purchase a label without having to refill in the shipment information repeatedly.
+-------
+* [`createLabelFromRate`](./docs/create-label-from-rate-id.md) - When retrieving rates for shipments using the `getRatesWithShipmentDetails` method, the returned information contains a `rateId` property that can be used to purchase a label without having to refill in the shipment information repeatedly.
 * [`createLabelFromShipmentDetails`](./docs/create-label-from-shipment-details.md) - Purchase and print a label for shipment.
 * [`getRatesWithShipmentDetails`](./docs/get-rates-with-shipment-details.md) - Given some shipment details and rate options, this method returns a list of rate quotes.
 * [`listCarriers`](./docs/list-carriers.md) - Returns a list of carrier accounts that have been connected through
@@ -23,7 +50,7 @@ the [ShipEngine dashboard](https://www.shipengine.com/docs/carriers/setup/).
 * [`voidLabelWithLabelId`](./docs/void-label-with-label-id.md) - Void a label with its Label ID.
 
 Contributing
---------------------------
+------------
 Contributions, enhancements, and bug-fixes are welcome!  [Open an issue](https://github.com/ShipEngine/shipengine-java/issues) on GitHub and [submit a pull request](https://github.com/ShipEngine/shipengine-java/pulls).
 
 #### Building
