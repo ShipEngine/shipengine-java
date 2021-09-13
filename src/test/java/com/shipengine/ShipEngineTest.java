@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
-import org.mockserver.model.Header;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -964,7 +963,6 @@ public class ShipEngineTest {
                         .withDelay(TimeUnit.SECONDS, 1));
 
         Map<String, String> listOfCarriers = new ShipEngine(customConfig).listCarriers();
-//        assertEquals(List.class, listOfCarriers.getClass());
         assertEquals(HashMap.class, listOfCarriers.getClass());
     }
 
@@ -1428,34 +1426,5 @@ public class ShipEngineTest {
 
         Map<String, String> rateData = new ShipEngine(customConfig).getRatesWithShipmentDetails(shipmentDetails);
         assertEquals("se-141694059", rateData.get("shipmentId"));
-    }
-
-    @Test
-    public void testRetries() {
-        new MockServerClient("127.0.0.1", 1080)
-                .when(request()
-                                .withMethod("GET")
-                                .withPath("/v1/carriers"),
-                        Times.exactly(4))
-                .respond(response()
-                        .withStatusCode(429)
-                        .withHeaders(
-                                new Header("Retry-After", "3"),
-                                new Header("Content-Type", "application/json")
-                        )
-                        .withBody("{\n" +
-                                "    \"request_id\": \"52ca0c76-e79b-4e19-920c-47dbc4e39922\",\n" +
-                                "    \"errors\": [\n" +
-                                "        {\n" +
-                                "            \"error_source\": \"shipengine\",\n" +
-                                "            \"error_type\": \"system\",\n" +
-                                "            \"error_code\": \"rate_limit_exceeded\",\n" +
-                                "            \"message\": \"You have exceeded the rate limit. Please see https://www.shipengine.com/docs/rate-limits\"\n" +
-                                "        }\n" +
-                                "    ]\n" +
-                                "}")
-                        .withDelay(TimeUnit.SECONDS, 1));
-
-        Map<String, String> clientResponse = new ShipEngine(customConfig).listCarriers();
     }
 }
