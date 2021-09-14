@@ -16,8 +16,9 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,9 +66,9 @@ public class InternalClient {
                         (err instanceof RateLimitExceededException) &&
                         (config.getTimeout() > ((RateLimitExceededException) err).getRetryAfter())) {
                     try {
-                        java.util.concurrent.TimeUnit.SECONDS.sleep(((RateLimitExceededException) err).getRetryAfter());
+                        java.util.concurrent.TimeUnit.MILLISECONDS.sleep(((RateLimitExceededException) err).getRetryAfter());
                         retry++;
-                        // continue;
+                        continue;
                     } catch (RuntimeException e) {
                         e.printStackTrace();
                     }
@@ -75,7 +76,7 @@ public class InternalClient {
                     throw err;
                 }
             }
-            retry++;
+            return apiResponse;
         }
         return apiResponse;
     }
@@ -111,9 +112,9 @@ public class InternalClient {
                         (err instanceof RateLimitExceededException) &&
                         (config.getTimeout() > ((RateLimitExceededException) err).getRetryAfter())) {
                     try {
-                        java.util.concurrent.TimeUnit.SECONDS.sleep(((RateLimitExceededException) err).getRetryAfter());
+                        java.util.concurrent.TimeUnit.MILLISECONDS.sleep(((RateLimitExceededException) err).getRetryAfter());
                         retry++;
-                        // continue;
+                        continue;
                     } catch (RuntimeException e) {
                         e.printStackTrace();
                     }
@@ -121,7 +122,7 @@ public class InternalClient {
                     throw err;
                 }
             }
-            retry++;
+            return apiResponse;
         }
         return apiResponse;
     }
@@ -154,9 +155,9 @@ public class InternalClient {
                         (err instanceof RateLimitExceededException) &&
                         (config.getTimeout() > ((RateLimitExceededException) err).getRetryAfter())) {
                     try {
-                        java.util.concurrent.TimeUnit.SECONDS.sleep(((RateLimitExceededException) err).getRetryAfter());
+                        java.util.concurrent.TimeUnit.MILLISECONDS.sleep(((RateLimitExceededException) err).getRetryAfter());
                         retry++;
-                        // continue;
+                        continue;
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -164,7 +165,7 @@ public class InternalClient {
                     throw err;
                 }
             }
-            retry++;
+            return apiResponse;
         }
         return apiResponse;
     }
@@ -230,7 +231,7 @@ public class InternalClient {
 
     public Map<String, String> post(
             String endpoint,
-            Map body,
+            Map<String, Object> body,
             Config config
     ) throws InterruptedException {
         return requestLoop(
@@ -243,7 +244,7 @@ public class InternalClient {
 
     public Map<String, String> put(
             String endpoint,
-            Map body,
+            Map<String, Object> body,
             Config config
     ) throws InterruptedException {
         return requestLoop(
@@ -320,7 +321,7 @@ public class InternalClient {
                     .build()
                     .send(preparedRequest, HttpResponse.BodyHandlers.ofString());
             responseBody = response.body();
-            String retryAfterHeaderValue = response.headers().firstValue("retry-after").toString();
+            Optional<String> retryAfterHeaderValue = response.headers().firstValue("retry-after");
 
             checkResponseForErrors(
                     response.statusCode(),
@@ -329,7 +330,6 @@ public class InternalClient {
                     config
             );
 
-            String debugg = "Check above values in debug console!";
         } catch (IOException | InterruptedException err) {
             err.printStackTrace();
         }
@@ -430,46 +430,53 @@ public class InternalClient {
     private void checkResponseForErrors(
             int statusCode,
             String httpResponseBody,
-            String retryAfterHeader,
+            Optional<String> retryAfterHeader,
             Config config
     ) {
-        Map<String, ArrayList<Map<String, String>>> responseBody = apiResponseToMap(httpResponseBody);
-        Map<String, String> error = responseBody.get("errors").get(0);
         switch (statusCode) {
             case 400:
             case 500:
+                Map<String, ArrayList<Map<String, String>>> responseBody400And500 = apiResponseToMap(httpResponseBody);
+                Map<String, String> error400And500 = responseBody400And500.get("errors").get(0);
                 throw new ShipEngineException(
-                        error.get("message"),
-                        responseBody.get("request_id").toString(),
-                        error.get("error_source"),
-                        error.get("error_type"),
-                        error.get("error_code")
+                        error400And500.get("message"),
+                        responseBody400And500.get("request_id").toString(),
+                        error400And500.get("error_source"),
+                        error400And500.get("error_type"),
+                        error400And500.get("error_code")
                 );
             case 404:
+                Map<String, ArrayList<Map<String, String>>> responseBody404 = apiResponseToMap(httpResponseBody);
+                Map<String, String> error404 = responseBody404.get("errors").get(0);
                 throw new ShipEngineException(
-                        error.get("message"),
-                        responseBody.get("request_id").toString(),
+                        error404.get("message"),
+                        responseBody404.get("request_id").toString(),
                         "shipengine",
-                        error.get("error_type"),
-                        error.get("error_code")
+                        error404.get("error_type"),
+                        error404.get("error_code")
                 );
             case 429:
-                int retry = Integer.parseInt(retryAfterHeader);
-                if (retry > config.getTimeout()) {
-                    throw new ClientTimeoutError(
-                            responseBody.get("request_id").toString(),
-                            "shipengine",
-                            retry
-                    );
-                } else {
-                    throw new RateLimitExceededException(
-                            responseBody.get("request_id").toString(),
-                            "shipengine",
-                            retry
-                    );
+                Map<String, String> responseBody429 = apiResponseToMap(httpResponseBody);
+                if (retryAfterHeader.isPresent()) {
+                    int retry = Integer.parseInt(retryAfterHeader.get()) * 1000;
+
+                    if (retry > config.getTimeout()) {
+                        throw new ClientTimeoutError(
+                                responseBody429.get("request_id"),
+                                "shipengine",
+                                retry
+                        );
+                    } else {
+                        throw new RateLimitExceededException(
+                                responseBody429.get("request_id"),
+                                "shipengine",
+                                retry
+                        );
+                    }
                 }
+                break;
             default:
-                return;
+                break;
         }
     }
 }

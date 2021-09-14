@@ -38,7 +38,7 @@ public class ClientTimeoutError extends ShipEngineException {
             int retryAfter
     ) {
         super(
-                String.format("The request took longer than the %s seconds allowed.", retryAfter),
+                String.format("The request took longer than the %s milliseconds allowed.", retryAfter),
                 requestID,
                 ErrorSource.valueOf(source.toUpperCase()),
                 ErrorType.SYSTEM,
