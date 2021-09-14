@@ -27,14 +27,18 @@ ShipEngine shipengine = new ShipEngine("<YOUR_API_KEY_HERE>");
 - You can also pass in a `HashMap/Map` containing configuration options instead of just passing in a string that is your `API Key`.
 
 ```java
-import com.shipengine;
+import com.shipengine.ShipEngine;
 
-ShipEngine shipengine = new ShipEngine(new HashMap<>() {{
-        put("apiKey", API_KEY);
-        put("pageSize", 75);
-        put("retries", 3);
-        put("timeout", 8000)
+public class ShipEngineDemo {
+    public static void main() {
+        ShipEngine shipengine = new ShipEngine(new HashMap<>() {{
+            put("apiKey", "<YOUR_API_KEY_HERE>");
+            put("pageSize", 75);
+            put("retries", 3);
+            put("timeout", 8000);
         }});
+    }
+}
 ```
 
 Methods
