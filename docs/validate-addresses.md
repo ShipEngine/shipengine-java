@@ -1,43 +1,95 @@
-Addresses Validate Documentation
-================================
-[ShipEngine](www.shipengine.com) allows you to validate an address before using it to create a shipment to ensure
-accurate delivery of your packages.
-
-Address validation can lead to reduced shipping costs by preventing address correction surcharges. ShipEngine
-cross-references multiple databases to validate addresses and identify potential delivery issues and supports address
-validation for virtually every country_code on Earth, including the United state_provinces, Canada, Great Britain,
-Australia, Germany, France, Norway, Spain, Sweden, Israel, Italy, and over 160 others.
-
-Please see [our docs](https://www.shipengine.com/docs/addresses/validation/) to learn more about validating addresses.
+Validate Addresses
+==================
+[ShipEngine](www.shipengine.com) allows you to validate an array of addresses before using it to create a shipment to
+ensure accurate delivery of your packages. Please see [our docs](https://www.shipengine.com/docs/addresses/validation/)
+to learn more about validating addresses.
 
 Input Parameters
 ----------------
-The `validate_addresses` method accepts a list of addresses as seen below.
-```java
 
-```
+The `validateAddresses` method accepts an array of addresses.
 
 Output
 ------
-The `validate_addresses` method returns a list of address validation result objects.
+The `validateAddresses` method returns an array of address validation result objects.
 
-Example:
-========
-- Pass in a list of addresses you wish to validate into the `validate_addresses` method.
+Example
+-------
+
 ```java
+import com.shipengine.ShipEngine;
 
+public class ShipEngineDemo {
+    public static void main() {
+        ShipEngine shipengine = new ShipEngine("<YOUR_API_KEY_HERE>");
+
+        HashMap<String, String> stubAddress = new HashMap<>() {{
+            put("name", "ShipEngine");
+            put("company", "Auctane");
+            put("phone", "1-123-456-7891");
+            put("address_line1", "3800 N Lamar Blvd");
+            put("address_line2", "ste 220");
+            put("city_locality", "Austin");
+            put("state_province", "TX");
+            put("postal_code", "78756");
+            put("country_code", "US");
+            put("address_residential_indicator", "unknown");
+        }};
+
+        Map<String, String> result = shipengine.validateAddresses(stubAddress);
+        System.out.println("result = " + result);
+    }
+} 
 ```
 
-Example Output:
-===============
-- A list of carrier account that are connected to a given ShipEngine account.
-```java
+Example Output
+--------------
 
+### Successful Address Validation
+
+```java
+[{matched_address={name=SHIPENGINE, phone=1-123-456-7891, address_line1=3800 N LAMAR BLVD STE 220, address_line2=, city_locality=AUSTIN, state_province=TX, postal_code=78756-0003, country_code=US, address_residential_indicator=no}, original_address={name=ShipEngine, phone=1-123-456-7891, address_line1=3800 N Lamar Blvd, address_line2=ste 220, city_locality=Austin, state_province=TX, postal_code=78756, country_code=US, address_residential_indicator=unknown}, messages=[], status=verified}]
+```
+
+### *JSON Output for reference:*
+
+```json5
+[
+  {
+    "status": "verified",
+    "original_address": {
+      "name": "ShipEngine",
+      "phone": "1-123-456-7891",
+      "company_name": null,
+      "address_line1": "3800 N Lamar Blvd",
+      "address_line2": "ste 220",
+      "address_line3": null,
+      "city_locality": "Austin",
+      "state_province": "TX",
+      "postal_code": "78756",
+      "country_code": "US",
+      "address_residential_indicator": "unknown"
+    },
+    "matched_address": {
+      "name": "SHIPENGINE",
+      "phone": "1-123-456-7891",
+      "company_name": null,
+      "address_line1": "3800 N LAMAR BLVD STE 220",
+      "address_line2": "",
+      "address_line3": null,
+      "city_locality": "AUSTIN",
+      "state_province": "TX",
+      "postal_code": "78756-0003",
+      "country_code": "US",
+      "address_residential_indicator": "no"
+    },
+    "messages": []
+  }
+]
 ```
 
 Exceptions
-==========
+----------
 
-- This method will only throw an exception that is an instance/extension of
-  ([ShipEngineError](../shipengine/errors/__init__.py)) if there is a problem if a problem occurs, such as a network
-  error or an error response from the API.
+- This method will only throw an exception that is an instance/extension of **ShipEngineException** if there is a
+  problem if a problem occurs, such as a network error or an error response from the API.

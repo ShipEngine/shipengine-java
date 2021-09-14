@@ -13,7 +13,7 @@ Output
 The `getRatesWithShipmentDetails` method returns the rates that were calculated for the given shipment params.
 
 Example
-=======
+-------
 
 ```java
 import com.shipengine.ShipEngine;

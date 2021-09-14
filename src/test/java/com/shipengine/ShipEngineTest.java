@@ -1207,6 +1207,96 @@ public class ShipEngineTest {
     }
 
     @Test
+    public void successfulTrackUsingLabelId() {
+        String labelId = "se-1234";
+        new MockServerClient("127.0.0.1", 1080)
+                .when(request()
+                                .withMethod("GET")
+                                .withPath("/v1/labels/se-1234/track"),
+                        Times.exactly(1))
+                .respond(response()
+                        .withStatusCode(200)
+                        .withBody("{\n" +
+                                "  \"tracking_number\": \"1Z932R800392060079\",\n" +
+                                "  \"status_code\": \"DE\",\n" +
+                                "  \"status_description\": \"Delivered\",\n" +
+                                "  \"carrier_status_code\": 1,\n" +
+                                "  \"carrier_status_description\": \"Your item was delivered in or at the mailbox at 9:10 am on March\",\n" +
+                                "  \"ship_date\": \"2018-09-23T15:00:00.000Z\",\n" +
+                                "  \"estimated_delivery_date\": \"2018-09-23T15:00:00.000Z\",\n" +
+                                "  \"actual_delivery_date\": \"2018-09-23T15:00:00.000Z\",\n" +
+                                "  \"exception_description\": \"string\",\n" +
+                                "  \"events\": [\n" +
+                                "    {\n" +
+                                "      \"occurred_at\": \"2018-09-23T15:00:00.000Z\",\n" +
+                                "      \"carrier_occurred_at\": \"2018-09-23T15:00:00.000Z\",\n" +
+                                "      \"description\": \"Delivered, In/At Mailbox\",\n" +
+                                "      \"city_locality\": \"AUSTIN\",\n" +
+                                "      \"state_province\": \"TX\",\n" +
+                                "      \"postal_code\": 78756,\n" +
+                                "      \"country_code\": \"CA\",\n" +
+                                "      \"company_name\": \"Stamps.com\",\n" +
+                                "      \"signer\": \"string\",\n" +
+                                "      \"event_code\": \"string\",\n" +
+                                "      \"latitude\": -90,\n" +
+                                "      \"longitude\": -180\n" +
+                                "    }\n" +
+                                "  ]\n" +
+                                "}")
+                        .withDelay(TimeUnit.SECONDS, 1));
+
+        Map<String, String> trackingResult = new ShipEngine(customConfig).trackUsingLabelId(labelId);
+        assertEquals("1Z932R800392060079", trackingResult.get("tracking_number"));
+    }
+
+    @Test
+    public void successfulTrackUsingCarrierCodeAndTrackingNumber() {
+        new MockServerClient("127.0.0.1", 1080)
+                .when(request()
+                                .withMethod("GET")
+                                .withPath("/v1/tracking?carrier_code=se-1234&tracking_number=abc123"),
+                        Times.exactly(1))
+                .respond(response()
+                        .withStatusCode(200)
+                        .withBody("{\n" +
+                                "  \"tracking_number\": \"1Z932R800392060079\",\n" +
+                                "  \"status_code\": \"DE\",\n" +
+                                "  \"status_description\": \"Delivered\",\n" +
+                                "  \"carrier_status_code\": 1,\n" +
+                                "  \"carrier_status_description\": \"Your item was delivered in or at the mailbox at 9:10 am on March\",\n" +
+                                "  \"ship_date\": \"2018-09-23T15:00:00.000Z\",\n" +
+                                "  \"estimated_delivery_date\": \"2018-09-23T15:00:00.000Z\",\n" +
+                                "  \"actual_delivery_date\": \"2018-09-23T15:00:00.000Z\",\n" +
+                                "  \"exception_description\": \"string\",\n" +
+                                "  \"events\": [\n" +
+                                "    {\n" +
+                                "      \"occurred_at\": \"2018-09-23T15:00:00.000Z\",\n" +
+                                "      \"carrier_occurred_at\": \"2018-09-23T15:00:00.000Z\",\n" +
+                                "      \"description\": \"Delivered, In/At Mailbox\",\n" +
+                                "      \"city_locality\": \"AUSTIN\",\n" +
+                                "      \"state_province\": \"TX\",\n" +
+                                "      \"postal_code\": 78756,\n" +
+                                "      \"country_code\": \"CA\",\n" +
+                                "      \"company_name\": \"Stamps.com\",\n" +
+                                "      \"signer\": \"string\",\n" +
+                                "      \"event_code\": \"string\",\n" +
+                                "      \"latitude\": -90,\n" +
+                                "      \"longitude\": -180\n" +
+                                "    }\n" +
+                                "  ]\n" +
+                                "}")
+                        .withDelay(TimeUnit.SECONDS, 1));
+
+        Map<String, Object> trackingData = new HashMap<>() {{
+            put("carrierCode", "se-1234");
+            put("trackingNumber", "abc123");
+        }};
+
+        Map<String, String> trackingResult = new ShipEngine(customConfig).trackUsingCarrierCodeAndTrackingNumber(trackingData);
+        assertEquals("1Z932R800392060079", trackingResult.get("tracking_number"));
+    }
+
+    @Test
     public void successfulGetRateFromShipmentDetails() {
         new MockServerClient("127.0.0.1", 1080)
                 .when(request()

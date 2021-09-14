@@ -1,7 +1,9 @@
 List Carrier Accounts
 =====================
 [ShipEngine](www.shipengine.com) allows you to connect
-your own carrier accounts through the ShipEngine [dashboard](https://www.shipengine.com/docs/carriers/setup/). You can list all the carrier accounts you have connected with the `listCarriers` method. To learn more about carrier accounts please see [our docs](https://www.shipengine.com/docs/reference/list-carriers/).
+your own carrier accounts through the ShipEngine [dashboard](https://www.shipengine.com/docs/carriers/setup/). You can 
+list all the carrier accounts you have connected with the `listCarriers` method. To learn more about carrier accounts
+please see [our docs](https://www.shipengine.com/docs/reference/list-carriers/).
 
 Output
 ------

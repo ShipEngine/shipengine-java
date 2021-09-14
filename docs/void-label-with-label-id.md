@@ -1,35 +1,50 @@
-Void Label by Label ID Documentation
-====================================
-[ShipEngine](www.shipengine.com) allows you to attempt to void a previously purchased label.
-
-Please see [our docs](https://www.shipengine.com/docs/labels/voiding/) to learn more about voiding a label.
-
+Void Label With Label Id
+================================
+[ShipEngine](www.shipengine.com) allows you to attempt to void a previously purchased label. Please see
+[our docs](https://www.shipengine.com/docs/labels/voiding/) to learn more about voiding a label.
 
 Input Parameters
 ----------------
-The `void_label_by_label_id` method accepts a string that contains the label ID that is being voided.
 
+The `voidLabelWithLabelId` method accepts a string that contains the `labelId` that is being voided.
 
 Output
 ------
-The `void_label_by_label_id` method returns an object that indicates the status of the void label request.
-
+The `voidLabelWithLabelId` method returns an object that indicates the status of the void label request.
 
 Example
-=======
+-------
 ```java
+import com.shipengine.ShipEngine;
 
+public class ShipEngineDemo {
+    public static void main() {
+        ShipEngine shipengine = new ShipEngine("<YOUR_API_KEY_HERE>");
+        Map<String, String> result = shipengine.voidLabelWithLabelId("se-1234");
+        System.out.println("result = " + result);
+    }
+} 
 ```
 
 Example Output
-==============
-```java
+--------------
 
+### Successful Address Validation
+```java
+{approved=true, message=This label has been voided.}
+```
+
+### *JSON Output for reference:*
+
+```json5
+{
+  "approved": true,
+  "message": "This label has been voided."
+}
 ```
 
 Exceptions
-==========
+----------
 
-- This method will only throw an exception that is an instance/extension of
-  ([ShipEngineError]()) if there is a problem if a problem occurs, such as a network
-  error or an error response from the API.
+- This method will only throw an exception that is an instance/extension of **ShipEngineException** if there is a
+  problem if a problem occurs, such as a network error or an error response from the API.
