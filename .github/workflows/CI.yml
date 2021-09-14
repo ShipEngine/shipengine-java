@@ -40,7 +40,7 @@ jobs:
           distribution: "adopt"
 
       - name: Lint the code
-        run: mvn -X checkstyle:checkstyle
+        run: mvn checkstyle:checkstyle
 
       - name: Run test suite
-        run: mvn test
+        run: mvn -X test
