@@ -19,9 +19,13 @@ Instantiate ShipEngine Class
 ----------------------------
 
 ```java
-import com.shipengine;
+import com.shipengine.ShipEngine;
 
-ShipEngine shipengine = new ShipEngine("<YOUR_API_KEY_HERE>");
+public class ShipEngineDemo {
+    public static void main() {
+        ShipEngine shipengine = new ShipEngine("<YOUR_API_KEY_HERE>");
+    }
+}
 ```
 
 - You can also pass in a `HashMap/Map` containing configuration options instead of just passing in a string that is your `API Key`.
