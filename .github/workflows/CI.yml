@@ -38,6 +38,9 @@ jobs:
           architecture: x64
           distribution: "adopt"
 
+      - name: Install dependencies
+        run: mvn -X clean install
+
       - name: Lint the code
         run: mvn checkstyle:checkstyle
 
