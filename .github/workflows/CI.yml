@@ -40,8 +40,14 @@ jobs:
           server-id: ${{ secrets.OSSRH_USERNAME }}
           server-password: ${{ secrets.OSSRH_TOKEN }}
 
+      - name: Install dependenices
+        run: |
+          mvn clean install
+
       - name: Lint the code
-        run: mvn checkstyle:checkstyle
+        run: |
+          mvn checkstyle:checkstyle
 
       - name: Run test suite
-        run: mvn -X test
+        run: |
+          mvn test
