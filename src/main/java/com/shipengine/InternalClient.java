@@ -366,7 +366,6 @@ public class InternalClient {
             List<Map<String, String>> requestBody,
             Config config
     ) {
-        // TODO: Remove debugging artifacts on line 370
         String preppedRequest = gson.toJson(requestBody);
         HttpRequest request = prepareRequest(endpoint, config)
                 .POST(HttpRequest.BodyPublishers.ofString(preppedRequest))
@@ -381,10 +380,8 @@ public class InternalClient {
             Map<String, String> requestBody,
             Config config
     ) {
-        // TODO: remove debug artifacts below
-        String dJson = hashMapToJson(requestBody);
         HttpRequest request = prepareRequest(endpoint, config)
-                .POST(HttpRequest.BodyPublishers.ofString(dJson))
+                .POST(HttpRequest.BodyPublishers.ofString(hashMapToJson(requestBody)))
                 .build();
 
         String apiResponse = sendPreparedRequest(request, config);
