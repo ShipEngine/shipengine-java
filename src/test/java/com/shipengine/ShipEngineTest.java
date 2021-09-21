@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
+import org.mockserver.model.Parameter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,21 +88,22 @@ public class ShipEngineTest {
                                 "]")
                         .withDelay(TimeUnit.SECONDS, 1));
 
-        HashMap<String, String> stubAddress = new HashMap<>() {{
-            put("name", "ShipEngine");
-            put("company", "Auctane");
-            put("phone", "1-123-456-7891");
-            put("address_line1", "3800 N Lamar Blvd");
-            put("address_line2", "ste 220");
-            put("city_locality", "Austin");
-            put("state_province", "TX");
-            put("postal_code", "78756");
-            put("country_code", "US");
-            put("address_residential_indicator", "unknown");
-        }};
 
-        List<HashMap<String, String>> unvalidatedAddress = List.of(stubAddress);
-        List<HashMap<String, String>> validatedAddress = new ShipEngine(customConfig).validateAddresses(unvalidatedAddress);
+        Map<String, String> stubAddress = Map.of(
+                "name", "ShipEngine",
+                "company", "Auctane",
+                "phone", "1-123-456-7891",
+                "address_line1", "3800 N Lamar Blvd",
+                "address_line2", "ste 220",
+                "city_locality", "Austin",
+                "state_province", "TX",
+                "postal_code", "78756",
+                "country_code", "US",
+                "address_residential_indicator", "unknown"
+        );
+
+        List<Map<String, String>> unvalidatedAddress = List.of(stubAddress);
+        List<Map<String, String>> validatedAddress = new ShipEngine(customConfig).validateAddresses(unvalidatedAddress);
         assertEquals("verified", validatedAddress.get(0).get("status"));
     }
 
@@ -1046,57 +1047,57 @@ public class ShipEngineTest {
                                 "}")
                         .withDelay(TimeUnit.SECONDS, 1));
 
-        Map<String, Object> shipmentDetails = new HashMap<>() {{
-            put("shipment", new HashMap<>() {{
-                put("carrier_id", "se-1234");
-                put("service_code", "usps_first_class_mail");
-                put("external_order_id", "string");
-                put("items", new ArrayList<>());
-                put("tax_identifiers", new ArrayList<>() {{
-                    add(new HashMap<>() {{
-                        put("taxable_entity_type", "shipper");
-                        put("identifier_type", "vat");
-                        put("issuing_authority", "string");
-                        put("value", "string");
-                    }});
-                }});
-                put("external_shipment_id", "string");
-                put("ship_date", "2018-09-23T00:00:00.000Z");
-                put("ship_to", new HashMap<>() {{
-                    put("name", "John Doe");
-                    put("phone", "1-123-456-7894");
-                    put("company_name", "The Home Depot");
-                    put("address_line1", "1999 Bishop Grandin Blvd.");
-                    put("address_line2", "Unit 408");
-                    put("address_line3", "Building #7");
-                    put("city_locality", "Winnipeg");
-                    put("state_province", "Manitoba");
-                    put("postal_code", "78756");
-                    put("country_code", "CA");
-                    put("address_residential_indicator", "no");
-                }});
-                put("ship_from", new HashMap<>() {{
-                    put("name", "John Doe");
-                    put("phone", "1-123-456-7894");
-                    put("company_name", "The Home Depot");
-                    put("address_line1", "1999 Bishop Grandin Blvd.");
-                    put("address_line2", "Unit 408");
-                    put("address_line3", "Building #7");
-                    put("city_locality", "Winnipeg");
-                    put("state_province", "Manitoba");
-                    put("postal_code", "78756");
-                    put("country_code", "CA");
-                    put("address_residential_indicator", "no");
-                }});
-            }});
-        }};
+        Map<String, Object> shipmentDetails = Map.ofEntries(
+                Map.entry("shipment", Map.of(
+                                "carrier_id", "se-1234",
+                                "service_code", "usps_first_class_mail",
+                                "external_order_id", "string",
+                                "item", List.of(),
+                                "tax_identifiers", List.of(
+                                        Map.of(
+                                                "taxable_entity_type", "shipper",
+                                                "identifier_type", "vat",
+                                                "issuing_authority", "string",
+                                                "value", "string"
+                                        )
+                                ),
+                                "external_shipment_id", "string",
+                                "ship_date", "2018-09-23T00:00:00.000Z",
+                                "ship_to", Map.ofEntries(
+                                        Map.entry("name", "John Doe"),
+                                        Map.entry("phone", "1-123-456-7894"),
+                                        Map.entry("company_name", "The Home Depot"),
+                                        Map.entry("address_line1", "1999 Bishop Grandin Blvd."),
+                                        Map.entry("address_line2", "Unit 408"),
+                                        Map.entry("address_line3", "Building #7"),
+                                        Map.entry("city_locality", "Winnipeg"),
+                                        Map.entry("state_province", "Manitoba"),
+                                        Map.entry("postal_code", "78756"),
+                                        Map.entry("country_code", "CA"),
+                                        Map.entry("address_residential_indicator", "no")
+                                ),
+                                "ship_from", Map.ofEntries(
+                                        Map.entry("name", "John Doe"),
+                                        Map.entry("phone", "1-123-456-7894"),
+                                        Map.entry("company_name", "The Home Depot"),
+                                        Map.entry("address_line1", "1999 Bishop Grandin Blvd."),
+                                        Map.entry("address_line2", "Unit 408"),
+                                        Map.entry("address_line3", "Building #7"),
+                                        Map.entry("city_locality", "Winnipeg"),
+                                        Map.entry("state_province", "Manitoba"),
+                                        Map.entry("postal_code", "78756"),
+                                        Map.entry("country_code", "CA"),
+                                        Map.entry("address_residential_indicator", "no")
+                                )
+                        )
+                ));
 
         Map<String, String> labelData = new ShipEngine(customConfig).createLabelFromShipmentDetails(shipmentDetails);
         assertEquals("stamps_com", labelData.get("carrier_code"));
     }
 
     @Test
-    public void successfulCreateLabelUsingLabelId() {
+    public void successfulCreateLabelUsingRateId() {
         new MockServerClient("127.0.0.1", 1080)
                 .when(request()
                                 .withMethod("POST")
@@ -1176,11 +1177,11 @@ public class ShipEngineTest {
                         .withDelay(TimeUnit.SECONDS, 1));
 
         String labelId = "se-1234";
-        Map<String, Object> labelParams = new HashMap<>() {{
-            put("label_layout", "4x6");
-            put("label_format", "pdf");
-            put("label_download_type", "url");
-        }};
+        Map<String, Object> labelParams = Map.of(
+                "label_layout", "4x6",
+                "label_format", "pdf",
+                "label_download_type", "url"
+        );
 
         Map<String, String> labelData = new ShipEngine(customConfig).createLabelFromRateId(labelId, labelParams);
         assertEquals("se-799373193", labelData.get("label_id"));
@@ -1251,10 +1252,19 @@ public class ShipEngineTest {
 
     @Test
     public void successfulTrackUsingCarrierCodeAndTrackingNumber() {
+        Map<String, Object> trackingData = Map.of(
+                "carrierCode", "se-1234",
+                "trackingNumber", "abc123"
+        );
+
         new MockServerClient("127.0.0.1", 1080)
                 .when(request()
                                 .withMethod("GET")
-                                .withPath("/v1/tracking?carrier_code=se-1234&tracking_number=abc123"),
+                                .withPath("/v1/tracking")
+                                .withQueryStringParameters((List<Parameter>) List.of(
+                                        new Parameter("carrier_code", (String) trackingData.get("carrierCode")),
+                                        new Parameter("tracking_number", (String) trackingData.get("trackingNumber"))
+                                )),
                         Times.exactly(1))
                 .respond(response()
                         .withStatusCode(200)
@@ -1286,11 +1296,6 @@ public class ShipEngineTest {
                                 "  ]\n" +
                                 "}")
                         .withDelay(TimeUnit.SECONDS, 1));
-
-        Map<String, Object> trackingData = new HashMap<>() {{
-            put("carrierCode", "se-1234");
-            put("trackingNumber", "abc123");
-        }};
 
         Map<String, String> trackingResult = new ShipEngine(customConfig).trackUsingCarrierCodeAndTrackingNumber(trackingData);
         assertEquals("1Z932R800392060079", trackingResult.get("tracking_number"));
@@ -1469,50 +1474,50 @@ public class ShipEngineTest {
                                 "}")
                         .withDelay(TimeUnit.SECONDS, 1));
 
-        Map<String, Object> shipmentDetails = new HashMap<>() {{
-            put("shipment", new HashMap<>() {{
-                put("carrier_id", "se-1234");
-                put("service_code", "usps_first_class_mail");
-                put("external_order_id", "string");
-                put("items", new ArrayList<>());
-                put("tax_identifiers", new ArrayList<>() {{
-                    add(new HashMap<>() {{
-                        put("taxable_entity_type", "shipper");
-                        put("identifier_type", "vat");
-                        put("issuing_authority", "string");
-                        put("value", "string");
-                    }});
-                }});
-                put("external_shipment_id", "string");
-                put("ship_date", "2018-09-23T00:00:00.000Z");
-                put("ship_to", new HashMap<>() {{
-                    put("name", "John Doe");
-                    put("phone", "1-123-456-7894");
-                    put("company_name", "The Home Depot");
-                    put("address_line1", "1999 Bishop Grandin Blvd.");
-                    put("address_line2", "Unit 408");
-                    put("address_line3", "Building #7");
-                    put("city_locality", "Winnipeg");
-                    put("state_province", "Manitoba");
-                    put("postal_code", "78756");
-                    put("country_code", "CA");
-                    put("address_residential_indicator", "no");
-                }});
-                put("ship_from", new HashMap<>() {{
-                    put("name", "John Doe");
-                    put("phone", "1-123-456-7894");
-                    put("company_name", "The Home Depot");
-                    put("address_line1", "1999 Bishop Grandin Blvd.");
-                    put("address_line2", "Unit 408");
-                    put("address_line3", "Building #7");
-                    put("city_locality", "Winnipeg");
-                    put("state_province", "Manitoba");
-                    put("postal_code", "78756");
-                    put("country_code", "CA");
-                    put("address_residential_indicator", "no");
-                }});
-            }});
-        }};
+        Map<String, Object> shipmentDetails = Map.ofEntries(
+                Map.entry("shipment", Map.of(
+                                "carrier_id", "se-1234",
+                                "service_code", "usps_first_class_mail",
+                                "external_order_id", "string",
+                                "item", List.of(),
+                                "tax_identifiers", List.of(
+                                        Map.of(
+                                                "taxable_entity_type", "shipper",
+                                                "identifier_type", "vat",
+                                                "issuing_authority", "string",
+                                                "value", "string"
+                                        )
+                                ),
+                                "external_shipment_id", "string",
+                                "ship_date", "2018-09-23T00:00:00.000Z",
+                                "ship_to", Map.ofEntries(
+                                        Map.entry("name", "John Doe"),
+                                        Map.entry("phone", "1-123-456-7894"),
+                                        Map.entry("company_name", "The Home Depot"),
+                                        Map.entry("address_line1", "1999 Bishop Grandin Blvd."),
+                                        Map.entry("address_line2", "Unit 408"),
+                                        Map.entry("address_line3", "Building #7"),
+                                        Map.entry("city_locality", "Winnipeg"),
+                                        Map.entry("state_province", "Manitoba"),
+                                        Map.entry("postal_code", "78756"),
+                                        Map.entry("country_code", "CA"),
+                                        Map.entry("address_residential_indicator", "no")
+                                ),
+                                "ship_from", Map.ofEntries(
+                                        Map.entry("name", "John Doe"),
+                                        Map.entry("phone", "1-123-456-7894"),
+                                        Map.entry("company_name", "The Home Depot"),
+                                        Map.entry("address_line1", "1999 Bishop Grandin Blvd."),
+                                        Map.entry("address_line2", "Unit 408"),
+                                        Map.entry("address_line3", "Building #7"),
+                                        Map.entry("city_locality", "Winnipeg"),
+                                        Map.entry("state_province", "Manitoba"),
+                                        Map.entry("postal_code", "78756"),
+                                        Map.entry("country_code", "CA"),
+                                        Map.entry("address_residential_indicator", "no")
+                                )
+                        )
+                ));
 
         Map<String, String> rateData = new ShipEngine(customConfig).getRatesWithShipmentDetails(shipmentDetails);
         assertEquals("se-141694059", rateData.get("shipmentId"));

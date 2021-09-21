@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
@@ -91,14 +92,14 @@ public class InternalClient {
      * @param config     The global Config object for the ShipEngine SDK.
      * @return List The response from ShipEngine API serialized into a List/Array.
      */
-    private List<HashMap<String, String>> requestLoop(
+    private List<Map<String, String>> requestLoop(
             String httpMethod,
             String endpoint,
-            List<HashMap<String, String>> body,
+            List<Map<String, String>> body,
             Config config
     ) throws InterruptedException {
         int retry = 0;
-        List apiResponse = List.of();
+        List<Map<String, String>> apiResponse = List.of();
         while (retry <= config.getRetries()) {
             try {
                 apiResponse = sendHttpRequest(
@@ -203,22 +204,22 @@ public class InternalClient {
         return apiResponse;
     }
 
-    private List<HashMap<String, String>> sendHttpRequest(
+    private List<Map<String, String>> sendHttpRequest(
             String httpMethod,
             String endpoint,
-            List<HashMap<String, String>> requestBody,
+            List<Map<String, String>> requestBody,
             Config config
     ) {
-        List<HashMap<String, String>> apiResponse = List.of();
+        List<Map<String, String>> apiResponse = List.of();
         if (httpMethod.equals(HttpVerbs.POST.name())) {
             apiResponse = internalPost(endpoint, requestBody, config);
         }
         return apiResponse;
     }
 
-    public List<HashMap<String, String>> post(
+    public List<Map<String, String>> post(
             String endpoint,
-            List<HashMap<String, String>> body,
+            List<Map<String, String>> body,
             Config config
     ) throws InterruptedException {
         return requestLoop(
@@ -321,12 +322,11 @@ public class InternalClient {
                     .build()
                     .send(preparedRequest, HttpResponse.BodyHandlers.ofString());
             responseBody = response.body();
-            Optional<String> retryAfterHeaderValue = response.headers().firstValue("retry-after");
 
             checkResponseForErrors(
                     response.statusCode(),
                     responseBody,
-                    retryAfterHeaderValue,
+                    response.headers(),
                     config
             );
 
@@ -361,11 +361,12 @@ public class InternalClient {
         return apiResponseToMap(apiResponse);
     }
 
-    private List<HashMap<String, String>> internalPost(
+    private List<Map<String, String>> internalPost(
             String endpoint,
-            List<HashMap<String, String>> requestBody,
+            List<Map<String, String>> requestBody,
             Config config
     ) {
+        // TODO: Remove debugging artifacts on line 370
         String preppedRequest = gson.toJson(requestBody);
         HttpRequest request = prepareRequest(endpoint, config)
                 .POST(HttpRequest.BodyPublishers.ofString(preppedRequest))
@@ -380,8 +381,10 @@ public class InternalClient {
             Map<String, String> requestBody,
             Config config
     ) {
+        // TODO: remove debug artifacts below
+        String dJson = hashMapToJson(requestBody);
         HttpRequest request = prepareRequest(endpoint, config)
-                .POST(HttpRequest.BodyPublishers.ofString(hashMapToJson(requestBody)))
+                .POST(HttpRequest.BodyPublishers.ofString(dJson))
                 .build();
 
         String apiResponse = sendPreparedRequest(request, config);
@@ -417,8 +420,8 @@ public class InternalClient {
         return gson.fromJson(apiResponse, HashMap.class);
     }
 
-    private static List<HashMap<String, String>> apiResponseToList(String apiResponse) {
-        List<HashMap<String, String>> newList = new ArrayList<>();
+    private static List<Map<String, String>> apiResponseToList(String apiResponse) {
+        List<Map<String, String>> newList = new ArrayList<>();
         List apiResponseAsList = gson.fromJson(apiResponse, List.class);
         for (Object k : apiResponseAsList) {
             String temp = gson.toJson(k);
@@ -430,7 +433,7 @@ public class InternalClient {
     private void checkResponseForErrors(
             int statusCode,
             String httpResponseBody,
-            Optional<String> retryAfterHeader,
+            HttpHeaders responseHeaders,
             Config config
     ) {
         switch (statusCode) {
@@ -446,16 +449,19 @@ public class InternalClient {
                         error400And500.get("error_code")
                 );
             case 404:
-                Map<String, ArrayList<Map<String, String>>> responseBody404 = apiResponseToMap(httpResponseBody);
-                Map<String, String> error404 = responseBody404.get("errors").get(0);
+                Map<String, ArrayList<Map<String, String>>> responseBody404 = httpResponseBody.equals("") ? Map.of() : apiResponseToMap(httpResponseBody);
+                Map<String, String> error404 = responseBody404.containsKey("errors") ?
+                        responseBody404.get("errors").get(0) :
+                        Map.of();
                 throw new ShipEngineException(
-                        error404.get("message"),
-                        responseBody404.get("request_id").toString(),
+                        mapSizeIsNotZero(error404) ? error404.get("message") : "404 Error Occurred..",
+                        responseBody404.size() != 0 ? responseBody404.get("request_id").toString() : "",
                         "shipengine",
-                        error404.get("error_type"),
-                        error404.get("error_code")
+                        mapSizeIsNotZero(error404) ? error404.get("error_type") : "error",
+                        mapSizeIsNotZero(error404) ? error404.get("error_code") : "not_found"
                 );
             case 429:
+                Optional<String> retryAfterHeader = responseHeaders.firstValue("retry-after");
                 Map<String, String> responseBody429 = apiResponseToMap(httpResponseBody);
                 if (retryAfterHeader.isPresent()) {
                     int retry = Integer.parseInt(retryAfterHeader.get()) * 1000;
@@ -478,5 +484,9 @@ public class InternalClient {
             default:
                 break;
         }
+    }
+
+    private boolean mapSizeIsNotZero(Map obj) {
+        return obj.size() != 0;
     }
 }
