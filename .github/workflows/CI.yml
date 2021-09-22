@@ -50,4 +50,4 @@ jobs:
 
       - name: Run test suite
         run: |
-          mvn --quiet test
+          mvn --quiet clean test jacoco:report coveralls:report -D repoToken=${{ secrets.COVERALLS_TOKEN }}
