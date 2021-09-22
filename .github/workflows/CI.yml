@@ -42,12 +42,12 @@ jobs:
 
       - name: Install dependenices
         run: |
-          mvn clean install -eq
+          mvn clean install
 
       - name: Lint the code
         run: |
-          mvn checkstyle:checkstyle -q
+          mvn --quiet checkstyle:checkstyle
 
       - name: Run test suite
         run: |
-          mvn test -q
+          mvn --quiet test
