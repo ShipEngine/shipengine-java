@@ -35,6 +35,7 @@ public class ShipEngineDemo {
                 "country_code", "US",
                 "address_residential_indicator", "unknown"
         );
+        
         List<Map<String, String>> unvalidatedAddress = List.of(stubAddress);
 
         Map<String, String> result = shipengine.validateAddresses(unvalidatedAddress);
