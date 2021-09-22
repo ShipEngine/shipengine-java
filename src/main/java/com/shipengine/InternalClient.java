@@ -6,6 +6,8 @@ import com.shipengine.exception.ClientTimeoutError;
 import com.shipengine.exception.RateLimitExceededException;
 import com.shipengine.exception.ShipEngineException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,11 +17,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -306,8 +304,8 @@ public class InternalClient {
                 .headers("Content-Type", "application/json")
                 .headers("Accepts", "application/json")
                 .headers("Api-Key", config.getApiKey())
+                .headers("User-Agent", deriveUserAgent())
                 .timeout(Duration.of(config.getTimeout(), ChronoUnit.SECONDS));
-
     }
 
     private String sendPreparedRequest(
@@ -485,5 +483,25 @@ public class InternalClient {
 
     private boolean mapSizeIsNotZero(Map obj) {
         return obj.size() != 0;
+    }
+
+    private String deriveUserAgent() {
+        String sdkVersion = "";
+        File versionFile = new File("version.txt");
+        String platformOs = System.getProperty("os.name");
+        String osVersion = System.getProperty("os.version");
+        String runtimeName = System.getProperty("java.runtime.name");
+        String runtimeVersion = System.getProperty("java.version");
+
+        try {
+            Scanner seReader = new Scanner(versionFile);
+            String currentVersion = seReader.next();
+            sdkVersion += String.format("shipengine-java/%s", currentVersion);
+            seReader.close();
+        } catch (FileNotFoundException err) {
+            err.printStackTrace();
+        }
+
+        return String.format("%s %s/%s %s/%s", sdkVersion, platformOs, osVersion, runtimeName, runtimeVersion);
     }
 }
