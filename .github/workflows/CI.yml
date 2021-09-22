@@ -45,7 +45,7 @@ jobs:
 
       - name: Install dependenices
         run: |
-          mvn clean install
+          mvn clean install -e
 
       - name: Lint the code
         run: |
