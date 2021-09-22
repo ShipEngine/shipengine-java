@@ -22,9 +22,10 @@ jobs:
           - macos-latest
           - windows-latest
         java-version:
-          - "11.0"
-          - "12.0"
-          - "13.0"
+          - "10"
+          - "11"
+          - "12"
+          - "13"
 
     steps:
       - uses: actions/checkout@v2
@@ -33,7 +34,7 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           architecture: x64
-          distribution: "zulu"
+          distribution: "adopt"
           server-id: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
         env:
@@ -42,12 +43,12 @@ jobs:
 
       - name: Install dependenices
         run: |
-          mvn clean install -e
+          mvn clean install -eq
 
       - name: Lint the code
         run: |
-          mvn checkstyle:checkstyle
+          mvn checkstyle:checkstyle -q
 
       - name: Run test suite
         run: |
-          mvn test
+          mvn test -q
