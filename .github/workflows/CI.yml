@@ -33,7 +33,7 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           architecture: x64
-          distribution: "zulu"
+          distribution: "adopt"
           server-id: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
         env:
@@ -46,7 +46,7 @@ jobs:
 
       - name: Lint the code
         run: |
-          mvn --quiet checkstyle:checkstyle
+          mvn --quiet checkstyle:check
 
       - name: Run test suite
         run: |
