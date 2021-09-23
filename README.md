@@ -81,7 +81,7 @@ To build the project locally on your computer:
 `mvn package`
 
 4. __Lint the code__<br>
-`mvn checkstyle:checkstyle`
+`mvn checkstyle:check`
 
 5. __Run the tests__<br>
 `mvn test`
