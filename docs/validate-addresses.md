@@ -23,20 +23,22 @@ public class ShipEngineDemo {
     public static void main() {
         ShipEngine shipengine = new ShipEngine("<YOUR_API_KEY_HERE>");
 
-        HashMap<String, String> stubAddress = new HashMap<>() {{
-            put("name", "ShipEngine");
-            put("company", "Auctane");
-            put("phone", "1-123-456-7891");
-            put("address_line1", "3800 N Lamar Blvd");
-            put("address_line2", "ste 220");
-            put("city_locality", "Austin");
-            put("state_province", "TX");
-            put("postal_code", "78756");
-            put("country_code", "US");
-            put("address_residential_indicator", "unknown");
-        }};
+        Map<String, String> stubAddress = Map.of(
+                "name", "ShipEngine",
+                "company", "Auctane",
+                "phone", "1-123-456-7891",
+                "address_line1", "3800 N Lamar Blvd",
+                "address_line2", "ste 220",
+                "city_locality", "Austin",
+                "state_province", "TX",
+                "postal_code", "78756",
+                "country_code", "US",
+                "address_residential_indicator", "unknown"
+        );
+        
+        List<Map<String, String>> unvalidatedAddress = List.of(stubAddress);
 
-        Map<String, String> result = shipengine.validateAddresses(stubAddress);
+        Map<String, String> result = shipengine.validateAddresses(unvalidatedAddress);
         System.out.println("result = " + result);
     }
 } 
@@ -48,7 +50,7 @@ Example Output
 ### Successful Address Validation
 
 ```java
-[{matched_address={name=SHIPENGINE, phone=1-123-456-7891, address_line1=3800 N LAMAR BLVD STE 220, address_line2=, city_locality=AUSTIN, state_province=TX, postal_code=78756-0003, country_code=US, address_residential_indicator=no}, original_address={name=ShipEngine, phone=1-123-456-7891, address_line1=3800 N Lamar Blvd, address_line2=ste 220, city_locality=Austin, state_province=TX, postal_code=78756, country_code=US, address_residential_indicator=unknown}, messages=[], status=verified}]
+[{matched_address={name=SHIPENGINE,phone=1-123-456-7891,address_line1=3800N LAMAR BLVD STE 220,address_line2=,city_locality=AUSTIN,state_province=TX,postal_code=78756-0003,country_code=US,address_residential_indicator=no},original_address={name=ShipEngine,phone=1-123-456-7891,address_line1=3800N Lamar Blvd,address_line2=ste 220,city_locality=Austin,state_province=TX,postal_code=78756,country_code=US,address_residential_indicator=unknown},messages=[],status=verified}]
 ```
 
 ### *JSON Output for reference:*

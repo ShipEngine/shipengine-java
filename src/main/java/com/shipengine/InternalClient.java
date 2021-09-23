@@ -6,19 +6,23 @@ import com.shipengine.exception.ClientTimeoutError;
 import com.shipengine.exception.RateLimitExceededException;
 import com.shipengine.exception.ShipEngineException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,14 +95,14 @@ public class InternalClient {
      * @param config     The global Config object for the ShipEngine SDK.
      * @return List The response from ShipEngine API serialized into a List/Array.
      */
-    private List<HashMap<String, String>> requestLoop(
+    private List<Map<String, String>> requestLoop(
             String httpMethod,
             String endpoint,
-            List<HashMap<String, String>> body,
+            List<Map<String, String>> body,
             Config config
     ) throws InterruptedException {
         int retry = 0;
-        List apiResponse = List.of();
+        List<Map<String, String>> apiResponse = List.of();
         while (retry <= config.getRetries()) {
             try {
                 apiResponse = sendHttpRequest(
@@ -203,22 +207,22 @@ public class InternalClient {
         return apiResponse;
     }
 
-    private List<HashMap<String, String>> sendHttpRequest(
+    private List<Map<String, String>> sendHttpRequest(
             String httpMethod,
             String endpoint,
-            List<HashMap<String, String>> requestBody,
+            List<Map<String, String>> requestBody,
             Config config
     ) {
-        List<HashMap<String, String>> apiResponse = List.of();
+        List<Map<String, String>> apiResponse = List.of();
         if (httpMethod.equals(HttpVerbs.POST.name())) {
             apiResponse = internalPost(endpoint, requestBody, config);
         }
         return apiResponse;
     }
 
-    public List<HashMap<String, String>> post(
+    public List<Map<String, String>> post(
             String endpoint,
-            List<HashMap<String, String>> body,
+            List<Map<String, String>> body,
             Config config
     ) throws InterruptedException {
         return requestLoop(
@@ -305,8 +309,8 @@ public class InternalClient {
                 .headers("Content-Type", "application/json")
                 .headers("Accepts", "application/json")
                 .headers("Api-Key", config.getApiKey())
+                .headers("User-Agent", deriveUserAgent())
                 .timeout(Duration.of(config.getTimeout(), ChronoUnit.SECONDS));
-
     }
 
     private String sendPreparedRequest(
@@ -321,12 +325,11 @@ public class InternalClient {
                     .build()
                     .send(preparedRequest, HttpResponse.BodyHandlers.ofString());
             responseBody = response.body();
-            Optional<String> retryAfterHeaderValue = response.headers().firstValue("retry-after");
 
             checkResponseForErrors(
                     response.statusCode(),
                     responseBody,
-                    retryAfterHeaderValue,
+                    response.headers(),
                     config
             );
 
@@ -361,9 +364,9 @@ public class InternalClient {
         return apiResponseToMap(apiResponse);
     }
 
-    private List<HashMap<String, String>> internalPost(
+    private List<Map<String, String>> internalPost(
             String endpoint,
-            List<HashMap<String, String>> requestBody,
+            List<Map<String, String>> requestBody,
             Config config
     ) {
         String preppedRequest = gson.toJson(requestBody);
@@ -417,8 +420,8 @@ public class InternalClient {
         return gson.fromJson(apiResponse, HashMap.class);
     }
 
-    private static List<HashMap<String, String>> apiResponseToList(String apiResponse) {
-        List<HashMap<String, String>> newList = new ArrayList<>();
+    private static List<Map<String, String>> apiResponseToList(String apiResponse) {
+        List<Map<String, String>> newList = new ArrayList<>();
         List apiResponseAsList = gson.fromJson(apiResponse, List.class);
         for (Object k : apiResponseAsList) {
             String temp = gson.toJson(k);
@@ -430,7 +433,7 @@ public class InternalClient {
     private void checkResponseForErrors(
             int statusCode,
             String httpResponseBody,
-            Optional<String> retryAfterHeader,
+            HttpHeaders responseHeaders,
             Config config
     ) {
         switch (statusCode) {
@@ -446,16 +449,19 @@ public class InternalClient {
                         error400And500.get("error_code")
                 );
             case 404:
-                Map<String, ArrayList<Map<String, String>>> responseBody404 = apiResponseToMap(httpResponseBody);
-                Map<String, String> error404 = responseBody404.get("errors").get(0);
+                Map<String, ArrayList<Map<String, String>>> responseBody404 = httpResponseBody.equals("") ? Map.of() : apiResponseToMap(httpResponseBody);
+                Map<String, String> error404 = responseBody404.containsKey("errors") ?
+                        responseBody404.get("errors").get(0) :
+                        Map.of();
                 throw new ShipEngineException(
-                        error404.get("message"),
-                        responseBody404.get("request_id").toString(),
+                        mapSizeIsNotZero(error404) ? error404.get("message") : "404 Error Occurred..",
+                        responseBody404.size() != 0 ? responseBody404.get("request_id").toString() : "",
                         "shipengine",
-                        error404.get("error_type"),
-                        error404.get("error_code")
+                        mapSizeIsNotZero(error404) ? error404.get("error_type") : "error",
+                        mapSizeIsNotZero(error404) ? error404.get("error_code") : "not_found"
                 );
             case 429:
+                Optional<String> retryAfterHeader = responseHeaders.firstValue("retry-after");
                 Map<String, String> responseBody429 = apiResponseToMap(httpResponseBody);
                 if (retryAfterHeader.isPresent()) {
                     int retry = Integer.parseInt(retryAfterHeader.get()) * 1000;
@@ -478,5 +484,29 @@ public class InternalClient {
             default:
                 break;
         }
+    }
+
+    private boolean mapSizeIsNotZero(Map obj) {
+        return obj.size() != 0;
+    }
+
+    private String deriveUserAgent() {
+        String sdkVersion = "";
+        File versionFile = new File("version.txt");
+        String platformOs = System.getProperty("os.name");
+        String osVersion = System.getProperty("os.version");
+        String runtimeName = System.getProperty("java.runtime.name");
+        String runtimeVersion = System.getProperty("java.version");
+
+        try {
+            Scanner seReader = new Scanner(versionFile);
+            String currentVersion = seReader.next();
+            sdkVersion += String.format("shipengine-java/%s", currentVersion);
+            seReader.close();
+        } catch (FileNotFoundException err) {
+            err.printStackTrace();
+        }
+
+        return String.format("%s %s/%s %s/%s", sdkVersion, platformOs, osVersion, runtimeName, runtimeVersion);
     }
 }

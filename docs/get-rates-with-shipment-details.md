@@ -22,50 +22,50 @@ public class ShipEngineDemo {
     public static void main() {
         ShipEngine shipengine = new ShipEngine("<YOUR_API_KEY_HERE>");
 
-        Map<String, Object> shipmentDetails = new HashMap<>() {{
-            put("shipment", new HashMap<>() {{
-                put("carrier_id", "se-1234");
-                put("service_code", "usps_first_class_mail");
-                put("external_order_id", "string");
-                put("items", new ArrayList<>());
-                put("tax_identifiers", new ArrayList<>() {{
-                    add(new HashMap<>() {{
-                        put("taxable_entity_type", "shipper");
-                        put("identifier_type", "vat");
-                        put("issuing_authority", "string");
-                        put("value", "string");
-                    }});
-                }});
-                put("external_shipment_id", "string");
-                put("ship_date", "2018-09-23T00:00:00.000Z");
-                put("ship_to", new HashMap<>() {{
-                    put("name", "John Doe");
-                    put("phone", "1-123-456-7894");
-                    put("company_name", "The Home Depot");
-                    put("address_line1", "1999 Bishop Grandin Blvd.");
-                    put("address_line2", "Unit 408");
-                    put("address_line3", "Building #7");
-                    put("city_locality", "Winnipeg");
-                    put("state_province", "Manitoba");
-                    put("postal_code", "78756");
-                    put("country_code", "CA");
-                    put("address_residential_indicator", "no");
-                }});
-                put("ship_from", new HashMap<>() {{
-                    put("name", "John Doe");
-                    put("phone", "1-123-456-7894");
-                    put("company_name", "The Home Depot");
-                    put("address_line1", "1999 Bishop Grandin Blvd.");
-                    put("address_line2", "Unit 408");
-                    put("address_line3", "Building #7");
-                    put("city_locality", "Winnipeg");
-                    put("state_province", "Manitoba");
-                    put("postal_code", "78756");
-                    put("country_code", "CA");
-                    put("address_residential_indicator", "no");
-                }});
-            }});
-        }};
+        Map<String, Object> shipmentDetails = Map.ofEntries(
+                Map.entry("shipment", Map.of(
+                                "carrier_id", "se-1234",
+                                "service_code", "usps_first_class_mail",
+                                "external_order_id", "string",
+                                "item", List.of(),
+                                "tax_identifiers", List.of(
+                                        Map.of(
+                                                "taxable_entity_type", "shipper",
+                                                "identifier_type", "vat",
+                                                "issuing_authority", "string",
+                                                "value", "string"
+                                        )
+                                ),
+                                "external_shipment_id", "string",
+                                "ship_date", "2018-09-23T00:00:00.000Z",
+                                "ship_to", Map.ofEntries(
+                                        Map.entry("name", "John Doe"),
+                                        Map.entry("phone", "1-123-456-7894"),
+                                        Map.entry("company_name", "The Home Depot"),
+                                        Map.entry("address_line1", "1999 Bishop Grandin Blvd."),
+                                        Map.entry("address_line2", "Unit 408"),
+                                        Map.entry("address_line3", "Building #7"),
+                                        Map.entry("city_locality", "Winnipeg"),
+                                        Map.entry("state_province", "Manitoba"),
+                                        Map.entry("postal_code", "78756"),
+                                        Map.entry("country_code", "CA"),
+                                        Map.entry("address_residential_indicator", "no")
+                                ),
+                                "ship_from", Map.ofEntries(
+                                        Map.entry("name", "John Doe"),
+                                        Map.entry("phone", "1-123-456-7894"),
+                                        Map.entry("company_name", "The Home Depot"),
+                                        Map.entry("address_line1", "1999 Bishop Grandin Blvd."),
+                                        Map.entry("address_line2", "Unit 408"),
+                                        Map.entry("address_line3", "Building #7"),
+                                        Map.entry("city_locality", "Winnipeg"),
+                                        Map.entry("state_province", "Manitoba"),
+                                        Map.entry("postal_code", "78756"),
+                                        Map.entry("country_code", "CA"),
+                                        Map.entry("address_residential_indicator", "no")
+                                )
+                        )
+                ));
 
         Map<String, String> result = shipengine.createLabelFromShipmentDetails(shipmentDetails);
         System.out.println("result = " + result);

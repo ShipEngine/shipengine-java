@@ -37,8 +37,8 @@ public class ShipEngine {
      * @param address A list of HashMaps where each HashMap contains the address data to be validated.
      * @return The response from ShipEngine API including the validated and normalized address.
      */
-    public List<HashMap<String, String>> validateAddresses(List<HashMap<String, String>> address) {
-        List<HashMap<String, String>> apiResponse = new ArrayList<>();
+    public List<Map<String, String>> validateAddresses(List<Map<String, String>> address) {
+        List<Map<String, String>> apiResponse = new ArrayList<>();
         try {
             apiResponse = client.post(
                     "/v1/addresses/validate",
@@ -63,9 +63,9 @@ public class ShipEngine {
      *                global ShipEngineConfig object that will only affect the current request, not all requests.
      * @return The response from ShipEngine API including the validated and normalized address.
      */
-    public List<HashMap<String, String>> validateAddresses(List<HashMap<String, String>> address, Map<String, Object> config) {
+    public List<Map<String, String>> validateAddresses(List<Map<String, String>> address, Map<String, Object> config) {
         Config mergedConfig = this.config.merge(config);
-        List<HashMap<String, String>> apiResponse = new ArrayList<>();
+        List<Map<String, String>> apiResponse = new ArrayList<>();
         try {
             apiResponse = client.post(
                     "/v1/addresses/validate",
@@ -79,34 +79,6 @@ public class ShipEngine {
         return apiResponse;
     }
 
-    public Map<String, String> listCarriers() {
-        Map<String, String> apiResponse = new HashMap<>();
-        try {
-            apiResponse = client.get(
-                    "/v1/carriers",
-                    this.getConfig()
-            );
-            return apiResponse;
-        } catch (ShipEngineException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return apiResponse;
-    }
-
-    public Map<String, String> listCarriers(Map<String, Object> config) {
-        Config mergedConfig = this.config.merge(config);
-        Map apiResponse = new HashMap<>();
-        try {
-            apiResponse = client.get(
-                    "/v1/carriers",
-                    mergedConfig
-            );
-            return apiResponse;
-        } catch (ShipEngineException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return apiResponse;
-    }
 
     public Map<String, String> createLabelFromShipmentDetails(Map<String, Object> shipment) {
         Map<String, String> apiResponse = new HashMap<>();
@@ -196,6 +168,35 @@ public class ShipEngine {
             apiResponse = client.post(
                     "/v1/rates",
                     shipment,
+                    mergedConfig
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
+    }
+
+    public Map<String, String> listCarriers() {
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.get(
+                    "/v1/carriers",
+                    this.getConfig()
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
+    }
+
+    public Map<String, String> listCarriers(Map<String, Object> config) {
+        Config mergedConfig = this.config.merge(config);
+        Map<String, String> apiResponse = new HashMap<>();
+        try {
+            apiResponse = client.get(
+                    "/v1/carriers",
                     mergedConfig
             );
             return apiResponse;

@@ -1,19 +1,24 @@
 [![ShipEngine](https://shipengine.github.io/img/shipengine-logo-wide.png)](https://www.shipengine.com/)
 
 ShipEngine Java SDK
-=====================================================
-### The official ShipEngine Java SDK
-
-[![CI-CD](https://github.com/ShipEngine/shipengine-java/actions/workflows/CI.yml/badge.svg)](https://github.com/ShipEngine/shipengine-java/actions/workflows/CI.yml)
+===================
+### The official Java SDK for ShipEngine API.
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/ShipEngine/shipengine-java/shipengine-java%20CI/main?label=ShipEngine%20Java%20CI&logo=github)
+![GitHub](https://img.shields.io/github/license/shipengine/shipengine-java?color=blue)
+![OS Compatibility](https://shipengine.github.io/img/badges/os-badges.svg)
 
 Quick Start
---------------------------
-Install `shipengine` via `<INSERT_PACKAGE_MANAGER_HERE>`:
-```bash
-INSTALL GOES COMMAND HERE
+-----------
+Install `shipengine` via `<INSERT_PACKAGE_MANAGER_HERE>` by adding the following under the dependencies key in your `pom.xml`:
+```xml
+<dependency>
+    <groupId>com.shipengine</groupId>
+    <artifactId>shipengine</artifactId>
+    <version>1.0.0</version>
+</dependency>
 ```
 
-- The only configuration requirement is providing an [API Key](https://www.shipengine.com/docs/auth/#api-keys "ShipEngine Authentication Docs").
+- The only configuration requirement for the SDK is providing an [API Key](https://www.shipengine.com/docs/auth/#api-keys "ShipEngine Authentication Docs").
 
 Instantiate ShipEngine Class
 ----------------------------
@@ -74,15 +79,15 @@ To build the project locally on your computer:
 `mvn package`
 
 4. __Lint the code__<br>
-`mvn checkstyle:checkstyle`
+`mvn checkstyle:check`
 
 5. __Run the tests__<br>
 `mvn test`
 
 VS Code Setup
--------------------------
+-------------
 Install the [Java Extension Pack](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) to help write, test and debug the application, and install [Checkstyle for Java](https://marketplace.visualstudio.com/items?itemName=shengchen.vscode-checkstyle) to enable code formatting.
 
 Committing
--------------------------
+----------
 This project adheres to the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
