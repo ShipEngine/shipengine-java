@@ -4,6 +4,7 @@ ShipEngine Java SDK
 ===================
 ### The official Java SDK for ShipEngine API.
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/ShipEngine/shipengine-java/shipengine-java%20CI/main?label=ShipEngine%20Java%20CI&logo=github)
+[![Coverage Status](https://coveralls.io/repos/github/ShipEngine/shipengine-java/badge.svg?branch=main)](https://coveralls.io/github/ShipEngine/shipengine-java?branch=main)
 ![GitHub](https://img.shields.io/github/license/shipengine/shipengine-java?color=blue)
 ![OS Compatibility](https://shipengine.github.io/img/badges/os-badges.svg)
 
