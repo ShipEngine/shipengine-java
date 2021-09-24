@@ -28,58 +28,6 @@ public class ShipEngine {
         return config;
     }
 
-    /**
-     * Address validation ensures accurate addresses and can lead to reduced shipping costs by preventing address
-     * correction surcharges. ShipEngine cross-references multiple databases to validate addresses and identify
-     * potential deliverability issues.
-     * See: https://shipengine.github.io/shipengine-openapi/#operation/validate_address
-     *
-     * @param address A list of HashMaps where each HashMap contains the address data to be validated.
-     * @return The response from ShipEngine API including the validated and normalized address.
-     */
-    public List<Map<String, String>> validateAddresses(List<Map<String, String>> address) {
-        List<Map<String, String>> apiResponse = new ArrayList<>();
-        try {
-            apiResponse = client.post(
-                    "/v1/addresses/validate",
-                    address,
-                    this.getConfig()
-            );
-            return apiResponse;
-        } catch (ShipEngineException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return apiResponse;
-    }
-
-    /**
-     * Address validation ensures accurate addresses and can lead to reduced shipping costs by preventing address
-     * correction surcharges. ShipEngine cross-references multiple databases to validate addresses and identify
-     * potential deliverability issues.
-     * See: https://shipengine.github.io/shipengine-openapi/#operation/validate_address
-     *
-     * @param address A list of HashMaps where each HashMap contains the address data to be validated.
-     * @param config  Method level configuration to set new values for properties of the
-     *                global ShipEngineConfig object that will only affect the current request, not all requests.
-     * @return The response from ShipEngine API including the validated and normalized address.
-     */
-    public List<Map<String, String>> validateAddresses(List<Map<String, String>> address, Map<String, Object> config) {
-        Config mergedConfig = this.config.merge(config);
-        List<Map<String, String>> apiResponse = new ArrayList<>();
-        try {
-            apiResponse = client.post(
-                    "/v1/addresses/validate",
-                    address,
-                    mergedConfig
-            );
-            return apiResponse;
-        } catch (ShipEngineException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return apiResponse;
-    }
-
-
     public Map<String, String> createLabelFromShipmentDetails(Map<String, Object> shipment) {
         Map<String, String> apiResponse = new HashMap<>();
         try {
@@ -95,7 +43,10 @@ public class ShipEngine {
         return apiResponse;
     }
 
-    public Map<String, String> createLabelFromShipmentDetails(Map<String, Object> shipment, Map<String, Object> config) {
+    public Map<String, String> createLabelFromShipmentDetails(
+            Map<String, Object> shipment,
+            Map<String, Object> config
+    ) {
         Config mergedConfig = this.config.merge(config);
         Map<String, String> apiResponse = new HashMap<>();
         try {
@@ -111,7 +62,10 @@ public class ShipEngine {
         return apiResponse;
     }
 
-    public Map<String, String> createLabelFromRateId(String rateId, Map<String, Object> params) {
+    public Map<String, String> createLabelFromRateId(
+            String rateId,
+            Map<String, Object> params
+    ) {
         Map<String, String> apiResponse = new HashMap<>();
         try {
             apiResponse = client.post(
@@ -161,7 +115,10 @@ public class ShipEngine {
         return apiResponse;
     }
 
-    public Map<String, String> getRatesWithShipmentDetails(Map<String, Object> shipment, Map<String, Object> config) {
+    public Map<String, String> getRatesWithShipmentDetails(
+            Map<String, Object> shipment,
+            Map<String, Object> config
+    ) {
         Config mergedConfig = this.config.merge(config);
         Map<String, String> apiResponse = new HashMap<>();
         try {
@@ -265,7 +222,10 @@ public class ShipEngine {
         return apiResponse;
     }
 
-    public Map<String, String> trackUsingLabelId(String labelId, Map<String, Object> config) {
+    public Map<String, String> trackUsingLabelId(
+            String labelId,
+            Map<String, Object> config
+    ) {
         Config mergedConfig = this.config.merge(config);
         Map<String, String> apiResponse = new HashMap<>();
         try {
@@ -274,6 +234,60 @@ public class ShipEngine {
                             "/v1/labels/%s/track",
                             labelId
                     ),
+                    mergedConfig
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
+    }
+
+    /**
+     * Address validation ensures accurate addresses and can lead to reduced shipping costs by preventing address
+     * correction surcharges. ShipEngine cross-references multiple databases to validate addresses and identify
+     * potential deliverability issues.
+     * See: https://shipengine.github.io/shipengine-openapi/#operation/validate_address
+     *
+     * @param address A list of HashMaps where each HashMap contains the address data to be validated.
+     * @return The response from ShipEngine API including the validated and normalized address.
+     */
+    public List<Map<String, String>> validateAddresses(List<Map<String, String>> address) {
+        List<Map<String, String>> apiResponse = new ArrayList<>();
+        try {
+            apiResponse = client.post(
+                    "/v1/addresses/validate",
+                    address,
+                    this.getConfig()
+            );
+            return apiResponse;
+        } catch (ShipEngineException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
+    }
+
+    /**
+     * Address validation ensures accurate addresses and can lead to reduced shipping costs by preventing address
+     * correction surcharges. ShipEngine cross-references multiple databases to validate addresses and identify
+     * potential deliverability issues.
+     * See: https://shipengine.github.io/shipengine-openapi/#operation/validate_address
+     *
+     * @param address A list of HashMaps where each HashMap contains the address data to be validated.
+     * @param config  Method level configuration to set new values for properties of the
+     *                global ShipEngineConfig object that will only affect the current request, not all requests.
+     * @return The response from ShipEngine API including the validated and normalized address.
+     */
+    public List<Map<String, String>> validateAddresses(
+            List<Map<String, String>> address,
+            Map<String, Object> config
+    ) {
+        Config mergedConfig = this.config.merge(config);
+        List<Map<String, String>> apiResponse = new ArrayList<>();
+        try {
+            apiResponse = client.post(
+                    "/v1/addresses/validate",
+                    address,
                     mergedConfig
             );
             return apiResponse;
