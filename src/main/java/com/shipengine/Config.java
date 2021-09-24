@@ -186,7 +186,7 @@ public class Config {
 
     public Config merge(Map<String, Object> newConfig) {
         Map<String, Object> config = new HashMap<>();
-        List<String> configKeys = Arrays.asList("apiKey", "timeout", "retries", "pageSize");
+        List<String> configKeys = Arrays.asList("apiKey", "timeout", "retries", "pageSize", "baseUrl");
 
         if (newConfig.isEmpty()) {
             return this;
@@ -214,9 +214,16 @@ public class Config {
             } else {
                 config.put(configKeys.get(3), getPageSize());
             }
+
+            if (newConfig.containsKey(configKeys.get(4))) {
+                config.put(configKeys.get(4), newConfig.get(configKeys.get(4)));
+            } else {
+                config.put(configKeys.get(4), getBaseUrl());
+            }
         }
         return new Config(
                 config.get(configKeys.get(0)).toString(),
+                config.get(configKeys.get(4)).toString(),
                 Integer.parseInt(config.get(configKeys.get(1)).toString()),
                 Integer.parseInt(config.get(configKeys.get(2)).toString()),
                 Integer.parseInt(config.get(configKeys.get(3)).toString())
