@@ -175,11 +175,11 @@ public class ShipEngineException extends RuntimeException {
             String url
     ) {
         super(message);
-        this.setRequestID(requestID);
-        this.setSource(source);
-        this.setType(type);
-        this.setCode(code);
-        this.setUrl(url);
+        setRequestID(requestID);
+        setSource(source);
+        setType(type);
+        setCode(code);
+        setUrl(url);
     }
 
     public ShipEngineException(
@@ -190,10 +190,10 @@ public class ShipEngineException extends RuntimeException {
             String url
     ) {
         super(message);
-        this.setSource(source);
-        this.setType(type);
-        this.setCode(code);
-        this.setUrl(url);
+        setSource(source);
+        setType(type);
+        setCode(code);
+        setUrl(url);
     }
 
     public ShipEngineException(
@@ -204,10 +204,10 @@ public class ShipEngineException extends RuntimeException {
             String code
     ) {
         super(message);
-        this.setRequestID(requestID);
-        this.setSource(ErrorSource.valueOf(source.toUpperCase()));
-        this.setType(ErrorType.valueOf(type.toUpperCase()));
-        this.setCode(ErrorCode.valueOf(code));
+        setRequestID(requestID);
+        setSource(ErrorSource.valueOf(source.toUpperCase()));
+        setType(ErrorType.valueOf(type.toUpperCase()));
+        setCode(ErrorCode.valueOf(code.toUpperCase()));
     }
 
     public ShipEngineException(
@@ -217,8 +217,8 @@ public class ShipEngineException extends RuntimeException {
             String code
     ) {
         super(message);
-        this.setSource(ErrorSource.valueOf(source.toUpperCase()));
-        this.setType(ErrorType.valueOf(type.toUpperCase()));
-        this.setCode(ErrorCode.valueOf(code));
+        setSource(ErrorSource.valueOf(source.toUpperCase()));
+        setType(ErrorType.valueOf(type.toUpperCase()));
+        setCode(ErrorCode.valueOf(code.toUpperCase()));
     }
 }
