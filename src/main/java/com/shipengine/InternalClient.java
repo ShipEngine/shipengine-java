@@ -449,7 +449,9 @@ public class InternalClient {
                         error400And500.get("error_code")
                 );
             case 404:
-                Map<String, ArrayList<Map<String, String>>> responseBody404 = httpResponseBody.equals("") ? Map.of() : apiResponseToMap(httpResponseBody);
+                Map<String, ArrayList<Map<String, String>>> responseBody404 = httpResponseBody.equals("") ?
+                        Map.of() :
+                        apiResponseToMap(httpResponseBody);
                 Map<String, String> error404 = responseBody404.containsKey("errors") ?
                         responseBody404.get("errors").get(0) :
                         Map.of();
