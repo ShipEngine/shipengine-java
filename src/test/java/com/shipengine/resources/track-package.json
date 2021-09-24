@@ -1,0 +1,27 @@
+{
+  "tracking_number": "1Z932R800392060079",
+  "status_code": "DE",
+  "status_description": "Delivered",
+  "carrier_status_code": 1,
+  "carrier_status_description": "Your item was delivered in or at the mailbox at 9:10 am on March",
+  "ship_date": "2018-09-23T15:00:00.000Z",
+  "estimated_delivery_date": "2018-09-23T15:00:00.000Z",
+  "actual_delivery_date": "2018-09-23T15:00:00.000Z",
+  "exception_description": "string",
+  "events": [
+    {
+      "occurred_at": "2018-09-23T15:00:00.000Z",
+      "carrier_occurred_at": "2018-09-23T15:00:00.000Z",
+      "description": "Delivered, In/At Mailbox",
+      "city_locality": "AUSTIN",
+      "state_province": "TX",
+      "postal_code": 78756,
+      "country_code": "CA",
+      "company_name": "Stamps.com",
+      "signer": "string",
+      "event_code": "string",
+      "latitude": -90,
+      "longitude": -180
+    }
+  ]
+}

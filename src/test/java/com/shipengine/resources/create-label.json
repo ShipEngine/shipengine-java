@@ -1,0 +1,69 @@
+{
+  "batch_id": "",
+  "carrier_code": "stamps_com",
+  "carrier_id": "se-656171",
+  "charge_event": "carrier_default",
+  "created_at": "2021-08-05T16:47:47.8768838Z",
+  "display_scheme": "label",
+  "form_download": null,
+  "insurance_claim": null,
+  "insurance_cost": {
+    "amount": 0.0,
+    "currency": "usd"
+  },
+  "is_international": false,
+  "is_return_label": false,
+  "label_download": {
+    "href": "https://api.shipengine.com/v1/downloads/10/_EKGeA4yuEuLzLq81iOzew/label-75693596.pdf",
+    "pdf": "https://api.shipengine.com/v1/downloads/10/_EKGeA4yuEuLzLq81iOzew/label-75693596.pdf",
+    "png": "https://api.shipengine.com/v1/downloads/10/_EKGeA4yuEuLzLq81iOzew/label-75693596.png",
+    "zpl": "https://api.shipengine.com/v1/downloads/10/_EKGeA4yuEuLzLq81iOzew/label-75693596.zpl"
+  },
+  "label_format": "pdf",
+  "label_id": "se-799373193",
+  "label_image_id": null,
+  "label_layout": "4x6",
+  "package_code": "package",
+  "packages": [
+    {
+      "dimensions": {
+        "height": 0.0,
+        "length": 0.0,
+        "unit": "inch",
+        "width": 0.0
+      },
+      "external_package_id": null,
+      "insured_value": {
+        "amount": 0.0,
+        "currency": "usd"
+      },
+      "label_messages": {
+        "reference1": null,
+        "reference2": null,
+        "reference3": null
+      },
+      "package_code": "package",
+      "package_id": 80328023,
+      "sequence": 1,
+      "tracking_number": "9400111899560334651289",
+      "weight": {
+        "unit": "ounce",
+        "value": 1.0
+      }
+    }
+  ],
+  "rma_number": null,
+  "service_code": "usps_first_class_mail",
+  "ship_date": "2021-08-05T00:00:00Z",
+  "shipment_cost": {
+    "amount": 3.35,
+    "currency": "usd"
+  },
+  "shipment_id": "se-144794216",
+  "status": "completed",
+  "trackable": true,
+  "tracking_number": "9400111899560334651289",
+  "tracking_status": "in_transit",
+  "voided": false,
+  "voided_at": null
+}
