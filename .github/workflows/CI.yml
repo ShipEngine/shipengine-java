@@ -13,7 +13,7 @@ jobs:
     name: Tests
 
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 25
+    timeout-minutes: 3
     strategy:
       fail-fast: true
       matrix:
@@ -21,6 +21,7 @@ jobs:
           - ubuntu-latest
         java-version:
           - "11"
+          - "12"
 
     steps:
       - uses: actions/checkout@v2
