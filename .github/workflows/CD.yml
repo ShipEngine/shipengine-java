@@ -16,6 +16,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
           package-name: shipengine
+        if: ${{ steps.release.outputs.release_created }}
 
       # Checkout code if release was created
       - uses: actions/checkout@v2
