@@ -5,7 +5,6 @@ import com.shipengine.exception.ShipEngineException;
 import com.shipengine.exception.ValidationException;
 import com.shipengine.util.Constants;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockserver.client.server.MockServerClient;
@@ -23,7 +22,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -71,13 +69,13 @@ public class ShipEngineTest {
         return fileData;
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void successfulInstantiationWithStringAPIKey() {
         ShipEngine shipengine = new ShipEngine(stubApiKey);
         assertEquals(stubApiKey, shipengine.getConfig().getApiKey());
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void successfulInstantiationWithIndividualArgs() {
         ShipEngine shipengine = new ShipEngine(stubApiKey, 8000, 3, 75);
         assertEquals(stubApiKey, shipengine.getConfig().getApiKey());
@@ -89,7 +87,7 @@ public class ShipEngineTest {
     /**
      * Testing Address Validation with a valid address.
      */
-    @Test
+    @Test(timeout = 1500)
     public void successfulAddressValidation() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -125,7 +123,7 @@ public class ShipEngineTest {
         assertEquals("verified", validatedAddress.get(0).get("status"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void addressValidationWithMethodLevelConfig() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -163,7 +161,7 @@ public class ShipEngineTest {
         assertEquals("verified", validatedAddress.get(0).get("status"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void addressValidationWithInvalidRetriesInMethodLevelConfig() {
         try {
             List<Map<String, String>> unvalidatedAddress = List.of(
@@ -198,7 +196,7 @@ public class ShipEngineTest {
         }
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void addressValidationWithInvalidTimeoutInMethodLevelConfig() {
         try {
             List<Map<String, String>> unvalidatedAddress = List.of(
@@ -237,7 +235,7 @@ public class ShipEngineTest {
      * Testing successful call to listCarriers which fetches all
      * carrier accounts connected o given ShipEngine Account.
      */
-    @Test
+    @Test(timeout = 1500)
     public void successfulListCarriers() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -257,7 +255,7 @@ public class ShipEngineTest {
         assertEquals(HashMap.class, listOfCarriers.getClass());
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void listCarriersWithMethodLevelConfig() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -277,7 +275,7 @@ public class ShipEngineTest {
         assertEquals(HashMap.class, listOfCarriers.getClass());
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void successfulCreateLabelUsingShipmentDetails() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -342,7 +340,7 @@ public class ShipEngineTest {
         assertEquals("stamps_com", labelData.get("carrier_code"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void createLabelUsingShipmentDetailsWithMethodLevelConfig() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -410,7 +408,7 @@ public class ShipEngineTest {
         assertEquals("stamps_com", labelData.get("carrier_code"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void successfulCreateLabelUsingRateId() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -437,7 +435,7 @@ public class ShipEngineTest {
         assertEquals("se-799373193", labelData.get("label_id"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void createLabelUsingRateIdWithMethodLevelConfig() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -468,7 +466,7 @@ public class ShipEngineTest {
         assertEquals("se-799373193", labelData.get("label_id"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void successfulVoidLabelWithLabelId() {
         String labelId = "se-799373193";
         try {
@@ -489,7 +487,7 @@ public class ShipEngineTest {
         assertEquals("This label has been voided.", voidLabelResult.get("message"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void voidLabelWithLabelIdUsingMethodLabelConfig() {
         String labelId = "se-799373193";
         try {
@@ -513,7 +511,7 @@ public class ShipEngineTest {
         assertEquals("This label has been voided.", voidLabelResult.get("message"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void successfulTrackUsingLabelId() {
         String labelId = "se-1234";
         try {
@@ -534,7 +532,7 @@ public class ShipEngineTest {
         assertEquals("1Z932R800392060079", trackingResult.get("tracking_number"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void trackUsingLabelIdWithMethodLevelConfig() {
         String labelId = "se-1234";
         try {
@@ -555,7 +553,7 @@ public class ShipEngineTest {
         assertEquals("1Z932R800392060079", trackingResult.get("tracking_number"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void successfulTrackUsingCarrierCodeAndTrackingNumber() {
         Map<String, Object> trackingData = Map.of(
                 "carrierCode", "se-1234",
@@ -584,7 +582,7 @@ public class ShipEngineTest {
         assertEquals("1Z932R800392060079", trackingResult.get("tracking_number"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void trackUsingCarrierCodeAndTrackingNumberWithMethodLevelConfig() {
         Map<String, Object> trackingData = Map.of(
                 "carrierCode", "se-1234",
@@ -616,7 +614,7 @@ public class ShipEngineTest {
         assertEquals("1Z932R800392060079", trackingResult.get("tracking_number"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void successfulGetRateFromShipmentDetails() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -683,7 +681,7 @@ public class ShipEngineTest {
         assertEquals("se-141694059", rateData.get("shipmentId"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void getRateFromShipmentDetailsWithMethodLevelConfig() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -753,7 +751,7 @@ public class ShipEngineTest {
         assertEquals("se-141694059", rateData.get("shipmentId"));
     }
 
-    @Test
+    @Test(timeout = 1500)
     public void rateLimitExceededExceptionOn429() {
         try {
             new MockServerClient("127.0.0.1", 1080)
