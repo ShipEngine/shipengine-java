@@ -472,7 +472,7 @@ public class InternalClient {
                         throw new ClientTimeoutError(
                                 responseBody429.get("request_id"),
                                 "shipengine",
-                                retry
+                                config.getTimeout()
                         );
                     } else {
                         throw new RateLimitExceededException(
