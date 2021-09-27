@@ -758,7 +758,7 @@ public class ShipEngineTest {
                     .when(request()
                                     .withMethod("GET")
                                     .withPath("/v1/carriers"),
-                            Times.exactly(4))
+                            Times.exactly(2))
                     .respond(response()
                             .withStatusCode(429)
                             .withHeaders(
