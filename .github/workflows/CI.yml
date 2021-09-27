@@ -20,7 +20,7 @@ jobs:
         os:
           - ubuntu-18.04
         java-version:
-          - "12"
+          - "11"
 
     steps:
       - uses: actions/checkout@v2
