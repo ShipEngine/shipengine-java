@@ -1,5 +1,7 @@
 package com.shipengine;
 
+import com.shipengine.exception.ShipEngineException;
+import com.shipengine.exception.ValidationException;
 import com.shipengine.util.Constants;
 import org.junit.Test;
 
@@ -20,6 +22,60 @@ public class ConfigTest {
         ShipEngine client = new ShipEngine(Constants.API_KEY);
 
         assertEquals(Constants.API_KEY, client.getConfig().getApiKey());
+    }
+
+    @Test
+    public void shouldNotAllowEmptyStringApiKey() {
+        try {
+            new ShipEngine("");
+        } catch (ValidationException err) {
+            assertEquals(ValidationException.class, err.getClass());
+            assertEquals(
+                    "A ShipEngine API key must be specified and cannot be empty or contain whitespace.",
+                    err.getMessage()
+            );
+            assertEquals(ShipEngineException.ErrorSource.SHIPENGINE, err.getSource());
+            assertEquals(ShipEngineException.ErrorType.VALIDATION, err.getType());
+            assertEquals(ShipEngineException.ErrorCode.INVALID_FIELD_VALUE, err.getCode());
+        }
+    }
+
+    @Test
+    public void shouldNotAllowInvalidRetries() {
+        try {
+            new ShipEngine(Map.of(
+                    "apiKey", Constants.API_KEY,
+                    "retries", 0
+                    ));
+        } catch (ValidationException err) {
+            assertEquals(ValidationException.class, err.getClass());
+            assertEquals(
+                    "The retries value must be greater than zero.",
+                    err.getMessage()
+            );
+            assertEquals(ShipEngineException.ErrorSource.SHIPENGINE, err.getSource());
+            assertEquals(ShipEngineException.ErrorType.VALIDATION, err.getType());
+            assertEquals(ShipEngineException.ErrorCode.INVALID_FIELD_VALUE, err.getCode());
+        }
+    }
+
+    @Test
+    public void shouldNotAllowInvalidTimeout() {
+        try {
+            new ShipEngine(Map.of(
+                    "apiKey", Constants.API_KEY,
+                    "timeout", 0
+            ));
+        } catch (ValidationException err) {
+            assertEquals(ValidationException.class, err.getClass());
+            assertEquals(
+                    "The timeout value must be greater than zero and in milliseconds.",
+                    err.getMessage()
+            );
+            assertEquals(ShipEngineException.ErrorSource.SHIPENGINE, err.getSource());
+            assertEquals(ShipEngineException.ErrorType.VALIDATION, err.getType());
+            assertEquals(ShipEngineException.ErrorCode.INVALID_FIELD_VALUE, err.getCode());
+        }
     }
 
     /**

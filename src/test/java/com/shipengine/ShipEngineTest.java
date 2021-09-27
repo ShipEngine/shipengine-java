@@ -1,12 +1,17 @@
 package com.shipengine;
 
+import com.shipengine.exception.RateLimitExceededException;
+import com.shipengine.exception.ShipEngineException;
+import com.shipengine.exception.ValidationException;
 import com.shipengine.util.Constants;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
+import org.mockserver.model.Header;
 import org.mockserver.model.Parameter;
 
 import java.io.FileNotFoundException;
@@ -18,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -135,7 +141,6 @@ public class ShipEngineTest {
             e.printStackTrace();
         }
 
-
         List<Map<String, String>> unvalidatedAddress = List.of(
                 Map.of(
                         "name", "ShipEngine",
@@ -156,6 +161,76 @@ public class ShipEngineTest {
                 methodLevelConfig
         );
         assertEquals("verified", validatedAddress.get(0).get("status"));
+    }
+
+    @Test
+    public void addressValidationWithInvalidRetriesInMethodLevelConfig() {
+        try {
+            List<Map<String, String>> unvalidatedAddress = List.of(
+                    Map.of(
+                            "name", "ShipEngine",
+                            "company", "Auctane",
+                            "phone", "1-123-456-7891",
+                            "address_line1", "3800 N Lamar Blvd",
+                            "address_line2", "ste 220",
+                            "city_locality", "Austin",
+                            "state_province", "TX",
+                            "postal_code", "78756",
+                            "country_code", "US",
+                            "address_residential_indicator", "unknown"
+                    )
+            );
+
+            List<Map<String, String>> validatedAddress = new ShipEngine(customConfig).validateAddresses(
+                    unvalidatedAddress,
+                    Map.of("retries", 0)
+            );
+        } catch (ValidationException err) {
+            err.printStackTrace();
+            assertEquals(ValidationException.class, err.getClass());
+            assertEquals(
+                    "The retries value must be greater than zero.",
+                    err.getMessage()
+            );
+            assertEquals(ShipEngineException.ErrorSource.SHIPENGINE, err.getSource());
+            assertEquals(ShipEngineException.ErrorType.VALIDATION, err.getType());
+            assertEquals(ShipEngineException.ErrorCode.INVALID_FIELD_VALUE, err.getCode());
+        }
+    }
+
+    @Test
+    public void addressValidationWithInvalidTimeoutInMethodLevelConfig() {
+        try {
+            List<Map<String, String>> unvalidatedAddress = List.of(
+                    Map.of(
+                            "name", "ShipEngine",
+                            "company", "Auctane",
+                            "phone", "1-123-456-7891",
+                            "address_line1", "3800 N Lamar Blvd",
+                            "address_line2", "ste 220",
+                            "city_locality", "Austin",
+                            "state_province", "TX",
+                            "postal_code", "78756",
+                            "country_code", "US",
+                            "address_residential_indicator", "unknown"
+                    )
+            );
+
+            List<Map<String, String>> validatedAddress = new ShipEngine(customConfig).validateAddresses(
+                    unvalidatedAddress,
+                    Map.of("timeout", 0)
+            );
+        } catch (ValidationException err) {
+            err.printStackTrace();
+            assertEquals(ValidationException.class, err.getClass());
+            assertEquals(
+                    "The timeout value must be greater than zero and in milliseconds.",
+                    err.getMessage()
+            );
+            assertEquals(ShipEngineException.ErrorSource.SHIPENGINE, err.getSource());
+            assertEquals(ShipEngineException.ErrorType.VALIDATION, err.getType());
+            assertEquals(ShipEngineException.ErrorCode.INVALID_FIELD_VALUE, err.getCode());
+        }
     }
 
     /**
@@ -676,5 +751,43 @@ public class ShipEngineTest {
                 methodLevelConfig
         );
         assertEquals("se-141694059", rateData.get("shipmentId"));
+    }
+
+    @Test
+    public void rateLimitExceededExceptionOn429() {
+        try {
+            new MockServerClient("127.0.0.1", 1080)
+                    .when(request()
+                                    .withMethod("GET")
+                                    .withPath("/v1/carriers"),
+                            Times.exactly(4))
+                    .respond(response()
+                            .withStatusCode(429)
+                            .withHeaders(
+                                    new Header("Retry-After", "2"),
+                                    new Header("Content-Type", "application/json")
+                            )
+                            .withBody("{\n" +
+                                    "    \"request_id\": \"52ca0c76-e79b-4e19-920c-47dbc4e39922\",\n" +
+                                    "    \"errors\": [\n" +
+                                    "        {\n" +
+                                    "            \"error_source\": \"shipengine\",\n" +
+                                    "            \"error_type\": \"system\",\n" +
+                                    "            \"error_code\": \"rate_limit_exceeded\",\n" +
+                                    "            \"message\": \"You have exceeded the rate limit. Please see https://www.shipengine.com/docs/rate-limits\"\n" +
+                                    "        }\n" +
+                                    "    ]\n" +
+                                    "}")
+                            .withDelay(TimeUnit.SECONDS, 1));
+
+            long startTime = System.currentTimeMillis();
+            Map<String, String> clientResponse = new ShipEngine(Map.of(
+                    "apiKey", Constants.API_KEY,
+                    "baseUrl", Constants.TEST_URL,
+                    "timeout", 15000
+            )).listCarriers();
+        } catch (RateLimitExceededException err) {
+            assertEquals(RateLimitExceededException.class, err.getClass());
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.shipengine;
 
-import com.shipengine.exception.InvalidFieldValueException;
 import com.shipengine.exception.ValidationException;
 import com.shipengine.util.Constants;
 
@@ -21,7 +20,11 @@ public class Config {
     private String baseUrl = Constants.BASE_URL;
     private int pageSize = 5000;
     private int retries = 1;
-    private int timeout = 50;
+
+    /**
+     * Client timeout in milliseconds.
+     */
+    private int timeout = 5000;
 
     public Config(Map<String, Object> config) {
         if (config.containsKey("apiKey")) {
@@ -85,14 +88,23 @@ public class Config {
     /*
      * Set the ShipEngine API key.
      */
-    public void setApiKey(String apiKey) throws InvalidFieldValueException {
-        String apiKeyStr = "apiKey";
+    public void setApiKey(String apiKey) throws ValidationException {
         Pattern regexPattern = Pattern.compile("[\\s]");
         Matcher matcher = regexPattern.matcher(apiKey);
         if (apiKey.length() == 0) {
-            throw new InvalidFieldValueException(apiKeyStr, apiKey);
+            throw new ValidationException(
+                    "A ShipEngine API key must be specified and cannot be empty or contain whitespace.",
+                    "shipengine",
+                    "validation",
+                    "invalid_field_value"
+            );
         } else if (matcher.matches()) {
-            throw new InvalidFieldValueException(apiKeyStr, apiKey);
+            throw new ValidationException(
+                    "A ShipEngine API key must be specified and cannot be empty or contain whitespace.",
+                    "shipengine",
+                    "validation",
+                    "invalid_field_value"
+            );
         } else {
             this.apiKey = apiKey;
         }
@@ -114,7 +126,7 @@ public class Config {
     public void setTimeout(int timeout) {
         if (timeout == 0) {
             throw new ValidationException(
-                    "The timeout value cannot be zero.",
+                    "The timeout value must be greater than zero and in milliseconds.",
                     "shipengine",
                     "validation",
                     "invalid_field_value"
@@ -141,7 +153,7 @@ public class Config {
     public void setRetries(int retries) {
         if (retries == 0) {
             throw new ValidationException(
-                    "The retries value cannot be zero.",
+                    "The retries value must be greater than zero.",
                     "shipengine",
                     "validation",
                     "invalid_field_value"
