@@ -751,7 +751,7 @@ public class ShipEngineTest {
         assertEquals("se-141694059", rateData.get("shipmentId"));
     }
 
-    @Test(timeout = 3000)
+    @Test(timeout = 6000)
     public void rateLimitExceededExceptionOn429() {
         try {
             new MockServerClient("127.0.0.1", 1080)
