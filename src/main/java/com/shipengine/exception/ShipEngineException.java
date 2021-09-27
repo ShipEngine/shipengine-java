@@ -27,13 +27,13 @@ public class ShipEngineException extends RuntimeException {
         return values;
     }
 
-    enum ErrorSource {
+    public enum ErrorSource {
         CARRIER,
         ORDER_SOURCE,
         SHIPENGINE
     }
 
-    enum ErrorType {
+    public enum ErrorType {
         ACCOUNT_STATUS,
         AUTHORIZATION,
         BUSINESS_RULES,
@@ -43,7 +43,7 @@ public class ShipEngineException extends RuntimeException {
         VALIDATION
     }
 
-    enum ErrorCode {
+    public enum ErrorCode {
         ADDRESS_NOT_FOUND,
         AUTO_FUND_NOT_SUPPORTED,
         BATCH_CANNOT_BE_MODIFIED,
