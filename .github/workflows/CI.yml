@@ -40,10 +40,6 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
-      - name: Install dependenices
-        run: |
-          mvn --quiet clean install
-
       - name: Lint the code
         run: |
           mvn --quiet checkstyle:check
