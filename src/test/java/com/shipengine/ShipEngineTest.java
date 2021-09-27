@@ -614,7 +614,7 @@ public class ShipEngineTest {
         assertEquals("1Z932R800392060079", trackingResult.get("tracking_number"));
     }
 
-    @Test(timeout = 1500)
+    @Test(timeout = 3000)
     public void successfulGetRateFromShipmentDetails() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -627,7 +627,7 @@ public class ShipEngineTest {
                             .withBody(fetchTestData(
                                     "src/test/java/com/shipengine/resources/get-rate-from-shipment-details.json"
                             ))
-                            .withDelay(TimeUnit.SECONDS, 1));
+                            .withDelay(TimeUnit.MILLISECONDS, 500));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -751,7 +751,7 @@ public class ShipEngineTest {
         assertEquals("se-141694059", rateData.get("shipmentId"));
     }
 
-    @Test(timeout = 1500)
+    @Test(timeout = 3000)
     public void rateLimitExceededExceptionOn429() {
         try {
             new MockServerClient("127.0.0.1", 1080)
@@ -776,7 +776,7 @@ public class ShipEngineTest {
                                     "        }\n" +
                                     "    ]\n" +
                                     "}")
-                            .withDelay(TimeUnit.SECONDS, 1));
+                            .withDelay(TimeUnit.MILLISECONDS,  500));
 
             long startTime = System.currentTimeMillis();
             Map<String, String> clientResponse = new ShipEngine(Map.of(
