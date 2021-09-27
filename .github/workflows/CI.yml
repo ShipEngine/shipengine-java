@@ -13,7 +13,7 @@ jobs:
     name: Tests
 
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 25
     strategy:
       fail-fast: true
       matrix:
