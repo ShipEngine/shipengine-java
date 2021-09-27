@@ -21,8 +21,6 @@ jobs:
           - ubuntu-latest
         java-version:
           - "11"
-          - "12"
-          - "13"
 
     steps:
       - uses: actions/checkout@v2
