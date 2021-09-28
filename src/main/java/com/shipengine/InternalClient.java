@@ -2,7 +2,7 @@ package com.shipengine;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.shipengine.exception.ClientTimeoutError;
+import com.shipengine.exception.ClientTimeoutException;
 import com.shipengine.exception.RateLimitExceededException;
 import com.shipengine.exception.ShipEngineException;
 
@@ -469,7 +469,7 @@ public class InternalClient {
                     int retry = Integer.parseInt(retryAfterHeader.get()) * 1000;
 
                     if (retry > config.getTimeout()) {
-                        throw new ClientTimeoutError(
+                        throw new ClientTimeoutException(
                                 responseBody429.get("request_id"),
                                 "shipengine",
                                 config.getTimeout()
