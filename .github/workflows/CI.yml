@@ -38,7 +38,7 @@ jobs:
 
       - name: Lint the code
         run: |
-          mvn --quiet checkstyle:check
+          mvn --quiet checkstyle:check -Dmaven.test.skip=true
 
       - name: Run test suite
         run: |
