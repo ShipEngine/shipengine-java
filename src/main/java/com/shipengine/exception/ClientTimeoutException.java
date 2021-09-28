@@ -1,6 +1,6 @@
 package com.shipengine.exception;
 
-public class ClientTimeoutError extends ShipEngineException {
+public class ClientTimeoutException extends ShipEngineException {
 
     private int retryAfter;
 
@@ -32,7 +32,7 @@ public class ClientTimeoutError extends ShipEngineException {
         this.requestID = requestID;
     }
 
-    public ClientTimeoutError(
+    public ClientTimeoutException(
             String requestID,
             String source,
             int retryAfter
