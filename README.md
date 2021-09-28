@@ -10,7 +10,7 @@ ShipEngine Java SDK
 
 Quick Start
 -----------
-Install `shipengine` via `<INSERT_PACKAGE_MANAGER_HERE>` by adding the following under the dependencies key in your `pom.xml`:
+Install `shipengine` from the `Maven Central Repository` by adding the following under the dependencies key in your `pom.xml`:
 ```xml
 <dependency>
     <groupId>com.shipengine</groupId>
