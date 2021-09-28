@@ -16,7 +16,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
           package-name: shipengine
-        if: ${{ steps.release.outputs.release_created }}
 
       # Checkout code if release was created
       - uses: actions/checkout@v2
@@ -33,9 +32,8 @@ jobs:
           server-password: MAVEN_PASSWORD
       - name: Publish package to Maven
         run: |
-          mvn --batch-mode deploy
+          mvn --batch-mode deploy -Dmaven.test.skip=true
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}

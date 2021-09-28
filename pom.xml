@@ -8,14 +8,14 @@
   <artifactId>shipengine</artifactId>
   <version>1.0.0</version>
 
-  <name>{project.groupId}:{project.artifactId}</name>
+  <name>ShipEngine SDK</name>
   <description>The official Java SDK for ShipEngine API.</description>
   <url>https://www.shipengine.com/docs</url>
 
   <scm>
     <connection>scm:git:git://github.com/ShipEngine/shipengine-java.git</connection>
     <developerConnection>scm:git:git://github.com/ShipEngine/shipengine-java.git</developerConnection>
-    <url>http://github.com/ShipEngine/shipengine-java/tree/main</url>
+    <url>https://github.com/ShipEngine/shipengine-java/tree/main</url>
   </scm>
 
   <licenses>
