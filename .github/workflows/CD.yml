@@ -32,7 +32,7 @@ jobs:
           server-password: MAVEN_PASSWORD
       - name: Publish package to Maven
         run: |
-          mvn --batch-mode deploy
+          mvn --batch-mode deploy -Dmaven.test.skip=true
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
