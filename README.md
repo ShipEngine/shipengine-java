@@ -15,7 +15,7 @@ Install `shipengine` from the `Maven Central Repository` by adding the following
 <dependency>
     <groupId>com.shipengine</groupId>
     <artifactId>shipengine</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
