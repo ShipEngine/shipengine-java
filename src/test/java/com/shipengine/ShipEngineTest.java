@@ -614,7 +614,7 @@ public class ShipEngineTest {
         assertEquals("1Z932R800392060079", trackingResult.get("tracking_number"));
     }
 
-    @Test(timeout = 3000)
+    @Test(timeout = 5000)
     public void successfulGetRateFromShipmentDetails() {
         try {
             new MockServerClient("127.0.0.1", 1080)
