@@ -6,9 +6,8 @@ import com.shipengine.exception.ClientTimeoutException;
 import com.shipengine.exception.RateLimitExceededException;
 import com.shipengine.exception.ShipEngineException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -22,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.Scanner;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -493,21 +492,21 @@ public class InternalClient {
     }
 
     private String deriveUserAgent() {
-        String sdkVersion = "";
-        File versionFile = new File("version.txt");
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        Properties properties = new Properties();
+        try (InputStream resourceStream = loader.getResourceAsStream("project.properties")) {
+            properties.load(resourceStream);
+        } catch (IOException err) {
+            err.printStackTrace();
+        }
+
         String platformOs = System.getProperty("os.name");
         String osVersion = System.getProperty("os.version");
         String runtimeName = System.getProperty("java.runtime.name");
         String runtimeVersion = System.getProperty("java.version");
 
-        try {
-            Scanner seReader = new Scanner(versionFile);
-            String currentVersion = seReader.next();
-            sdkVersion += String.format("shipengine-java/%s", currentVersion);
-            seReader.close();
-        } catch (FileNotFoundException err) {
-            err.printStackTrace();
-        }
+        String currentVersion = properties.getProperty("version");
+        String sdkVersion = String.format("shipengine-java/%s", currentVersion);
 
         return String.format("%s %s/%s %s/%s", sdkVersion, platformOs, osVersion, runtimeName, runtimeVersion);
     }
