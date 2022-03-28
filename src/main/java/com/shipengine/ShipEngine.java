@@ -307,7 +307,7 @@ public class ShipEngine {
     public Map<String, String> voidLabelWithLabelId(String labelId) {
         Map<String, String> apiResponse = new HashMap<>();
         try {
-            apiResponse = client.get(
+            apiResponse = client.put(
                     String.format("/v1/labels/%s/void", labelId),
                     this.getConfig()
             );
