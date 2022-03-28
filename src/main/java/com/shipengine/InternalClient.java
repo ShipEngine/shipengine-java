@@ -247,13 +247,11 @@ public class InternalClient {
 
     public Map<String, String> put(
             String endpoint,
-            Map<String, Object> body,
             Config config
     ) throws InterruptedException {
         return requestLoop(
                 HttpVerbs.PUT.name(),
                 endpoint,
-                body,
                 config
         );
     }
