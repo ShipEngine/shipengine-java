@@ -436,7 +436,7 @@ public class InternalClient {
         switch (statusCode) {
             case 400:
             case 500:
-                Map<String, ArrayList<Map<String, String>>> responseBody400And500 = apiResponseToMap(httpResponseBody);
+                Map<String, Object> responseBody400And500 = apiResponseToMap(httpResponseBody);
                 Map<String, String> error400And500 = responseBody400And500.get("errors").get(0);
                 throw new ShipEngineException(
                         error400And500.get("message"),
