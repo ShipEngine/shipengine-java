@@ -437,7 +437,7 @@ public class InternalClient {
             case 400:
             case 500:
                 Map<String, Object> responseBody400And500 = apiResponseToMap(httpResponseBody);
-                Map<String, String> error400And500 = responseBody400And500.get("errors").get(0);
+                Map<String, String> error400And500 = (Map) ((ArrayList) responseBody400And500.get("errors")).get(0);
                 throw new ShipEngineException(
                         error400And500.get("message"),
                         responseBody400And500.get("request_id").toString(),
@@ -446,12 +446,9 @@ public class InternalClient {
                         error400And500.get("error_code")
                 );
             case 404:
-                Map<String, ArrayList<Map<String, String>>> responseBody404 = httpResponseBody.equals("") ?
-                        Map.of() :
-                        apiResponseToMap(httpResponseBody);
-                Map<String, String> error404 = responseBody404.containsKey("errors") ?
-                        responseBody404.get("errors").get(0) :
-                        Map.of();
+                Map<String, Object> responseBody404 = httpResponseBody.equals("") ? Map.of() : apiResponseToMap(httpResponseBody);
+                Map<String, String> error404 = responseBody404.containsKey("errors") ? (Map) ((ArrayList) responseBody404.get("errors")).get(0) : Map.of();
+                
                 throw new ShipEngineException(
                         mapSizeIsNotZero(error404) ? error404.get("message") : "404 Error Occurred..",
                         responseBody404.size() != 0 ? responseBody404.get("request_id").toString() : "",
