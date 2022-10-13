@@ -38,7 +38,7 @@ public class ShipEngineDemo {
         
         List<Map<String, String>> unvalidatedAddress = List.of(stubAddress);
 
-        Map<String, String> result = shipengine.validateAddresses(unvalidatedAddress);
+        List<Map<String, String>> result = shipengine.validateAddresses(unvalidatedAddress);
         System.out.println("result = " + result);
     }
 } 
