@@ -67,7 +67,7 @@ public class ShipEngineDemo {
                         )
                 ));
 
-        Map<String, String> result = shipengine.createLabelFromShipmentDetails(shipmentDetails);
+        Map<String, String> result = shipengine.getRatesWithShipmentDetails(shipmentDetails);
         System.out.println("result = " + result);
     }
 }
