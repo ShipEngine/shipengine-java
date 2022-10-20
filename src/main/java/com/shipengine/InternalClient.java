@@ -2,9 +2,11 @@ package com.shipengine;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.shipengine.exception.ClientTimeoutException;
 import com.shipengine.exception.RateLimitExceededException;
 import com.shipengine.exception.ShipEngineException;
+import com.shipengine.ErrorResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -416,7 +418,12 @@ public class InternalClient {
     private static Map apiResponseToMap(String apiResponse) {
         return gson.fromJson(apiResponse, HashMap.class);
     }
-
+    
+    private static ErrorResponse apiResponseToErrorResponse(String apiResponse) {
+        TypeToken<ErrorResponse> mapType = new TypeToken<ErrorResponse>(){};
+        return gson.fromJson(apiResponse, mapType.getType());
+    }
+    
     private static List<Map<String, String>> apiResponseToList(String apiResponse) {
         List<Map<String, String>> newList = new ArrayList<>();
         List apiResponseAsList = gson.fromJson(apiResponse, List.class);
@@ -436,44 +443,44 @@ public class InternalClient {
         switch (statusCode) {
             case 400:
             case 500:
-                Map<String, ArrayList<Map<String, String>>> responseBody400And500 = apiResponseToMap(httpResponseBody);
-                Map<String, String> error400And500 = responseBody400And500.get("errors").get(0);
+                ErrorResponse responseBody400And500 = apiResponseToErrorResponse(httpResponseBody);
+                Map<String, String> error400And500 = responseBody400And500.getErrors().get(0);
                 throw new ShipEngineException(
                         error400And500.get("message"),
-                        responseBody400And500.get("request_id").toString(),
+                        responseBody400And500.getRequestId(),
                         error400And500.get("error_source"),
                         error400And500.get("error_type"),
                         error400And500.get("error_code")
                 );
             case 404:
-                Map<String, ArrayList<Map<String, String>>> responseBody404 = httpResponseBody.equals("") ?
-                        Map.of() :
-                        apiResponseToMap(httpResponseBody);
-                Map<String, String> error404 = responseBody404.containsKey("errors") ?
-                        responseBody404.get("errors").get(0) :
+                ErrorResponse responseBody404 = httpResponseBody.equals("") ?
+                        new ErrorResponse() :
+                        apiResponseToErrorResponse(httpResponseBody);
+                Map<String, String> error404 = responseBody404.getErrors() != null ?
+                        responseBody404.getErrors().get(0) :
                         Map.of();
                 throw new ShipEngineException(
                         mapSizeIsNotZero(error404) ? error404.get("message") : "404 Error Occurred..",
-                        responseBody404.size() != 0 ? responseBody404.get("request_id").toString() : "",
+                        responseBody404.getRequestId() != null ? responseBody404.getRequestId() : "",
                         "shipengine",
                         mapSizeIsNotZero(error404) ? error404.get("error_type") : "error",
                         mapSizeIsNotZero(error404) ? error404.get("error_code") : "not_found"
                 );
             case 429:
                 Optional<String> retryAfterHeader = responseHeaders.firstValue("retry-after");
-                Map<String, String> responseBody429 = apiResponseToMap(httpResponseBody);
+                ErrorResponse responseBody429 = apiResponseToErrorResponse(httpResponseBody);
                 if (retryAfterHeader.isPresent()) {
                     int retry = Integer.parseInt(retryAfterHeader.get()) * 1000;
 
                     if (retry > config.getTimeout()) {
                         throw new ClientTimeoutException(
-                                responseBody429.get("request_id"),
+                                responseBody429.getRequestId(),
                                 "shipengine",
                                 config.getTimeout()
                         );
                     } else {
                         throw new RateLimitExceededException(
-                                responseBody429.get("request_id"),
+                                responseBody429.getRequestId(),
                                 "shipengine",
                                 retry
                         );
