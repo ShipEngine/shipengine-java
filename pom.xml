@@ -6,7 +6,7 @@
 
   <groupId>com.shipengine</groupId>
   <artifactId>shipengine</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 
   <name>ShipEngine SDK</name>
   <description>The official Java SDK for ShipEngine API.</description>
