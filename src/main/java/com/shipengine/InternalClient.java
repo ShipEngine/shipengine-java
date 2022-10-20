@@ -454,7 +454,6 @@ public class InternalClient {
                         error400And500.get("error_code")
                 );
             case 404:
-                System.out.println(httpResponseBody);
                 ErrorResponse responseBody404 = httpResponseBody.equals("") ?
                         new ErrorResponse() :
                         apiResponseToErrorResponse(httpResponseBody);
