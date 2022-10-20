@@ -444,7 +444,6 @@ public class InternalClient {
             case 400:
             case 500:
                 ErrorResponse responseBody400And500 = apiResponseToErrorResponse(httpResponseBody);
-                System.out.println(httpResponseBody);
                 Map<String, String> error400And500 = responseBody400And500.getErrors().get(0);
                 throw new ShipEngineException(
                         error400And500.get("message"),
