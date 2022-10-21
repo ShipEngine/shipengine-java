@@ -28,7 +28,8 @@ jobs:
           java-version: "11"
           architecture: x64
           distribution: "adopt"
-          cache: 'maven'
+          cache: "maven"
+          overwrite-settings: false
           server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
           server-username: OSSRH_USERNAME # env variable for username in deploy
           server-password: OSSRH_TOKEN # env variable for token in deploy
