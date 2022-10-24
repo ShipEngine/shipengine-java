@@ -18,11 +18,6 @@ jobs:
           package-name: shipengine
 
       - uses: actions/checkout@v2.5.0
-       
-      - name: Publish to GitHub Packages Apache Maven
-        run: mvn deploy
-        env:
-          GITHUB_TOKEN: ${{ github.token }} # GITHUB_TOKEN is the default env for the password
           
       - name: Setup Maven central
         uses: actions/setup-java@v3.6.0
