@@ -17,11 +17,8 @@ jobs:
           release-type: simple
           package-name: shipengine
 
-      # Checkout code if release was created
       - uses: actions/checkout@v2.5.0
-        if: ${{ steps.release.outputs.release_created }}
-
-      # Setup Java and deploy if a release was created
+      
       - name: Setup Java
         uses: actions/setup-java@v3.6.0
         with:
