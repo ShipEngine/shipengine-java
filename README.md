@@ -45,7 +45,7 @@ public class ShipEngineDemo {
             put("apiKey", "<YOUR_API_KEY_HERE>");
             put("pageSize", 75);
             put("retries", 3);
-            put("timeout", 8000);
+            put("timeout", 60000);
         }});
     }
 }

@@ -42,7 +42,7 @@ public class ShipEngineTest {
             "apiKey", Constants.API_KEY,
             "baseUrl", Constants.TEST_URL,
             "retries", 8,
-            "timeout", 8000
+            "timeout", 60000
     );
 
     @Before
@@ -77,10 +77,10 @@ public class ShipEngineTest {
 
     @Test(timeout = 1500)
     public void successfulInstantiationWithIndividualArgs() {
-        ShipEngine shipengine = new ShipEngine(stubApiKey, 8000, 3, 75);
+        ShipEngine shipengine = new ShipEngine(stubApiKey, 60000, 3, 75);
         assertEquals(stubApiKey, shipengine.getConfig().getApiKey());
         assertEquals(3, shipengine.getConfig().getRetries());
-        assertEquals(8000, shipengine.getConfig().getTimeout());
+        assertEquals(60000, shipengine.getConfig().getTimeout());
         assertEquals(75, shipengine.getConfig().getPageSize());
     }
 
