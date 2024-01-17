@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [1.0.3](https://github.com/ShipEngine/shipengine-java/compare/v1.0.2...v1.0.3) (2024-01-17)
+
+
+### Bug Fixes
+
+* update timeout to 60s ([f8bca01](https://github.com/ShipEngine/shipengine-java/commit/f8bca01e115aba99343f64de30282c25c13ea045))
+
 ## 1.0.2 (2022-10-21)
 
 
