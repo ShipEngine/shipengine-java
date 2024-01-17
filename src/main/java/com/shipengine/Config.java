@@ -24,7 +24,7 @@ public class Config {
     /**
      * Client timeout in milliseconds.
      */
-    private int timeout = 5000;
+    private int timeout = 60000;
 
     public Config(Map<String, Object> config) {
         if (config.containsKey("apiKey")) {
@@ -114,7 +114,7 @@ public class Config {
      * The maximum amount of time (in milliseconds) to wait for a response from the
      * ShipEngine server.
      *
-     * Defaults to 5000 (5 seconds).
+     * Defaults to 60000 (60 seconds).
      */
     public int getTimeout() {
         return timeout;
