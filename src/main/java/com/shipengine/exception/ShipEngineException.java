@@ -40,7 +40,9 @@ public class ShipEngineException extends RuntimeException {
         ERROR,
         SECURITY,
         SYSTEM,
-        VALIDATION
+        VALIDATION,
+        WALLET,
+        FUNDING_SOURCES
     }
 
     public enum ErrorCode {
