@@ -40,7 +40,9 @@ public class ShipEngineException extends RuntimeException {
         ERROR,
         SECURITY,
         SYSTEM,
-        VALIDATION
+        VALIDATION,
+        WALLET,
+        FUNDING_SOURCES
     }
 
     public enum ErrorCode {
@@ -81,7 +83,9 @@ public class ShipEngineException extends RuntimeException {
         UNSPECIFIED,
         VERIFICATION_CONFLICT,
         WAREHOUSE_CONFLICT,
-        WEBHOOK_EVENT_TYPE_CONFLICT
+        WEBHOOK_EVENT_TYPE_CONFLICT,
+        FUNDING_SOURCE_MISSING_CONFIGURATION,
+        FUNDING_SOURCE_ERROR
     }
 
     /**
@@ -96,7 +100,8 @@ public class ShipEngineException extends RuntimeException {
      * contact ShipEngine for support or if you should contact the carrier or
      * marketplace instead.
      *
-     * @see <a href="https://www.shipengine.com/docs/errors/codes/#error-source">...</a>
+     * @see <a href=
+     *      "https://www.shipengine.com/docs/errors/codes/#error-source">...</a>
      */
     private ErrorSource source;
 
@@ -104,7 +109,8 @@ public class ShipEngineException extends RuntimeException {
      * Indicates the type of error that occurred, such as a validation error, a
      * security error, etc.
      *
-     * @see <a href="https://www.shipengine.com/docs/errors/codes/#error-type">...</a>
+     * @see <a href=
+     *      "https://www.shipengine.com/docs/errors/codes/#error-type">...</a>
      */
     private ErrorType type;
 
@@ -112,7 +118,8 @@ public class ShipEngineException extends RuntimeException {
      * A code that indicates the specific error that occurred, such as missing a
      * required field, an invalid address, a timeout, etc.
      *
-     * @see <a href="https://www.shipengine.com/docs/errors/codes/#error-code">...</a>
+     * @see <a href=
+     *      "https://www.shipengine.com/docs/errors/codes/#error-code">...</a>
      */
     private ErrorCode code;
 
@@ -172,8 +179,7 @@ public class ShipEngineException extends RuntimeException {
             ErrorSource source,
             ErrorType type,
             ErrorCode code,
-            String url
-    ) {
+            String url) {
         super(message);
         setRequestID(requestID);
         setSource(source);
@@ -187,8 +193,7 @@ public class ShipEngineException extends RuntimeException {
             ErrorSource source,
             ErrorType type,
             ErrorCode code,
-            String url
-    ) {
+            String url) {
         super(message);
         setSource(source);
         setType(type);
@@ -201,8 +206,7 @@ public class ShipEngineException extends RuntimeException {
             String requestID,
             String source,
             String type,
-            String code
-    ) {
+            String code) {
         super(message);
         setRequestID(requestID);
         setSource(ErrorSource.valueOf(source.toUpperCase()));
@@ -214,8 +218,7 @@ public class ShipEngineException extends RuntimeException {
             String message,
             String source,
             String type,
-            String code
-    ) {
+            String code) {
         super(message);
         setSource(ErrorSource.valueOf(source.toUpperCase()));
         setType(ErrorType.valueOf(type.toUpperCase()));
